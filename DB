@@ -1,0 +1,35 @@
+CREATE DATABASE SCH;
+USE SCH;
+
+
+CREATE TABLE `user` (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(20) NOT NULL,
+  userId VARCHAR(50) NOT NULL UNIQUE,
+  `password` VARCHAR(100) NOT NULL,
+  `role` VARCHAR(30) DEFAULT 'USER',
+  sex VARCHAR(10) NOT NULL,
+  award VARCHAR(30)
+);
+
+INSERT INTO `user` (`name`, userId, `password`,sex) VALUES
+('a','a','a','male'),
+('b','b','b','female');
+
+SELECT * FROM `user`;
+
+CREATE TABLE userSchedule(
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  userId VARCHAR(50) NOT NULL,
+  weekStart DATE NOT NULL,
+  ableTime TEXT NOT NULL,
+  confirm BOOLEAN NOT NULL
+);
+
+
+CREATE TABLE timeTable (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  weekStart DATE NOT NULL,
+  assignedTime TEXT NOT NULL,
+  `status` VARCHAR(30) NOT NULL DEFAULT 'UPLOAD'
+);
