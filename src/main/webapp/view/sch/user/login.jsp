@@ -56,7 +56,7 @@
 		<div class="table_login">
 			<form action="/sch/user/doLogin" method="post" onsubmit="loginForm(this); return false;">	
 				<div class="table-box">
-					<div class="logo">SCHM</div>
+					<div class="logo_login">SCHM</div>
 					<tr>
 						<td>
 							<input class="input" id="input" type="text" name="userId" placeholder="아이디"/>

@@ -124,8 +124,10 @@ public class UserController {
 	@PostMapping("/sch/user/doLogin")
 	@ResponseBody
 	public String doLogin(HttpSession session, Integer loginUserId, String userId) {
-		session.setAttribute("loginUserId", loginUserId);
-		
+		User user = this.userService.getUserLoginId(userId);
+
+		session.setAttribute("loginUserId", user.getId());
+		session.setAttribute("loginUserName", user.getName());
 		return Util.jsReplace("", "/sch/home/main");
 	}
 	
@@ -136,24 +138,24 @@ public class UserController {
 		
 		session.invalidate();
 		
-		return Util.jsReplace("로그아웃이 완료되었습니다.", "/");
+		return Util.jsReplace("로그아웃이 완료되었습니다.", "/sch/user/login");
 	}
 	
-	//스케줄 확인
-	@GetMapping("/sch/user/schedule")
-	public String schedule() {
-		return "sch/user/schedule";
+	//내정보
+	@GetMapping("/sch/user/information")
+	public String selectInfo() {
+		return "sch/user/information";
 	}
 	
-	//스케줄 확정
-	@GetMapping("/sch/user/confirmSchedule")
-	public String confirmSchedule() {
-		return "sch/user/confirmSchedule";
+	//비밀번호 변경
+	@GetMapping("/sch/user/changePw")
+	public String changePw() {
+		return "sch/user/changePw";
 	}
 	
-	//변경 대타 요청
-	@GetMapping("/sch/user/requestSwap")
-	public String requestSwap() {
-		return "sch/user/requestSwap";
+	//급여조회
+	@GetMapping("/sch/user/selectSal")
+	public String selectSal() {
+		return "sch/user/selectSal";
 	}
 }
