@@ -3,62 +3,74 @@
     
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<c:set var="pageTitle" value="로그인" />
+<c:set var="pageTitle" value="SCHM"/>
 
 <%@ include file="/view/sch/common/header.jsp"%>
 
 	<script>
-		const loginForm = function() {
-			const form = document.forms['loginForm'];
-			const userId = form.userId.value.trim();
-			const password = form.password.value.trim();
+		const loginForm = function(form) {
+			form.userId.value = form.userId.value.trim();
+			form.password.value = form.password.value.trim();
 			
-			if (userId.length == 0) {
-				$('#idMsg').text('아이디를 입력하세요.').css('color', 'red');
+			if (form.userId.value.length == 0) {
+				alert('아이디를 입력하세요.');
 				form.userId.focus();
-				return;
+				return false;
 			}
 			
-			if (password.length == 0) {
-				$('#pwMsg').text('비밀번호를 입력하세요.').css('color', 'red');
+			if (form.password.value.length == 0) {
+				alert('비밀번호를 입력하세요.');
 				form.password.focus();
-				return;
+				return false;
 			}
+			
+			let validLoginMsg = $('#validLoginMsg');
 			
 			$.ajax ({
-				url: '/sch/user/doLogin',
-				type: 'get',
-				data: {userId: userId, password: password},
-				dataType: 'text',
-				success: function(response) {
-					location.href = '/';
-				}, 
-				error: function(xhr) {
-					alert("아이디 또는 비밀번호가 잘못되었습니다.");
+				url: '/sch/user/validLogin',
+				type: 'post',
+				data: {
+					userId: form.userId.value,
+					password: form.password.value
+				},
+				dataType: 'json',
+				success: function(data) {
+					if (data.rsCode.startsWith("F-")) {
+						validLoginMsg.addClass('text-red-500');
+						validLoginMsg.html(data.rsMsg);
+					} else {
+						validLoginMsg.removeClass('text-red-500');
+						validLoginMsg.empty();
+						$(form).append(`<input type="hidden" name="loginUserId" value="${data.rsData}" />`);
+						form.submit();
+					}
+				},
+				error: function(xhr,status, error) {
+					console.log(error)
 				}
-			});
-		};
+			})
+		}
 	</script>
 	
 	<section class="area">
-		<div class="table">
-			<form name="loginForm">	
+		<div class="table_login">
+			<form action="/sch/user/doLogin" method="post" onsubmit="loginForm(this); return false;">	
 				<div class="table-box">
+					<div class="logo">SCHM</div>
 					<tr>
 						<td>
-							<input class="input" type="text" name="userId" placeholder="아이디"/>
-							<div id="idMsg"></div>
+							<input class="input" id="input" type="text" name="userId" placeholder="아이디"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input class="input" type="password" name="password" placeholder="비밀번호"/>
-							<div id="pwMsg"></div>
+							<input class="input" id="input" type="password" name="password" placeholder="비밀번호"/>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<button type="button" class="btn btn-neutral" onclick="loginForm()">로그인</button>
+							<div class="message" id="validLoginMsg"></div>
+							<button class="btn btn-neutral">로그인</button>
 						</td>
 					</tr>
 					<tr>

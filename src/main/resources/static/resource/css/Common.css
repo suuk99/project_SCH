@@ -1,0 +1,59 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: 'Suit';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+html * {
+	font-family: 'Suit';
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.table {
+	margin-top: 240px;
+	text-align: center;
+}
+
+/* 로그인 박스 */
+.table_login {
+	margin-top: 200px;
+	text-align: center;
+	height: 450px;
+	width: 400px;
+	background-color: #ededeb;
+	margin-right: auto;
+	margin-left: auto;
+}
+
+/* 로그인 창 input 간격*/
+#input {
+	margin-bottom: 14px;
+}
+.logo {
+	font-weight: bold;
+	font-size: 49px;
+	padding-top: 48px;
+	padding-bottom: 30px;
+}
+/* 비동기 문구 칸 */
+.message {
+    min-height: 20px;   
+    line-height: 18px;
+    font-size: 15px;
+    margin-top: 3px;
+}
+
+/* 로그인 회원가입 창 버튼 */
+.btn {
+	width: 320px;
+	font-size: 15px;
+	margin: 9px 0;
+}
+

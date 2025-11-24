@@ -33,7 +33,7 @@ public class UserController {
 		
 		this.userService.joinUser(userId, password, name, sex);
 		
-		return Util.jsReplace("회원가입이 요청이 완료되었습니다.", "/");
+		return Util.jsReplace("회원가입이 요청이 완료되었습니다.", "/sch/user/login");
 	}
 	
 	@GetMapping("/sch/user/userIdChk")
@@ -61,9 +61,17 @@ public class UserController {
 	@GetMapping("/sch/user/checkPw")
 	@ResponseBody
 	public ResultData checkPw(String password, String checkPw) {
+		
+		if (password.trim().length() == 0 || checkPw.trim().length() == 0) {
+			return new ResultData<>("F-2", "비밀번호를 입력해 주세요.");
+		}
+		
+		if (checkPw.trim().length() < 5) {
+			return new ResultData<>("F-3", "비밀번호를 확인해 주세요.");
+		}
 	    boolean isMatch = this.userService.getCheckPw(password, checkPw);
 	    
-	    if (!isMatch) {
+	    if (!isMatch && checkPw.trim().length() >= 5) {
 	        return new ResultData<>("F-1", "비밀번호가 일치하지 않습니다.");
 	    }
 	    return new ResultData<>("S-1", "비밀번호가 일치합니다.");
@@ -77,7 +85,7 @@ public class UserController {
 	    if (!isValid) {
 	        return new ResultData<>("F-1", "이름을 입력하세요.");
 	    }
-	    return new ResultData<>("S-1", "");
+	    return new ResultData<>("S-1", " ");
 	}
 
 	@GetMapping("/sch/user/sexChk")
@@ -91,25 +99,34 @@ public class UserController {
 	    return new ResultData<>("S-1", "");
 	}
 	
-	
-	
 	//로그인
 	@GetMapping("/sch/user/login")
 	public String login() {
 		return "sch/user/login";
 	}
 	
-	@GetMapping("/sch/user/doLogin")
+	@PostMapping("/sch/user/validLogin")
 	@ResponseBody
-	public String doLogin(HttpSession session, String userId, String password) {
-		User user = userService.getUserLoginId(userId);
+	public ResultData<Integer> validLogin(String userId, String password) {
+		User user = this.userService.getUserLoginId(userId);
 		
-		if (user == null || !user.getPassword().equals(password)) {
-			return Util.jsReplace("아이디 또는 비밀번호가 잘못되었습니다.", "/sch/user/login");
+		if (userId == null || userId.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+			return new ResultData<>("F-0", "아이디 또는 비밀번호를 입력해 주세요.");
 		}
 		
-		session.setAttribute("loginMemberId", user.getId());
-		return Util.jsReplace("", "/");
+		if (user == null || !user.getPassword().equals(password)) {
+			return new ResultData<>("F-1", "아이디 또는 비밀번호를 확인해 주세요.");
+		}
+		
+		return new ResultData<>("S-1", "");
+	}
+	
+	@PostMapping("/sch/user/doLogin")
+	@ResponseBody
+	public String doLogin(HttpSession session, Integer loginUserId, String userId) {
+		session.setAttribute("loginUserId", loginUserId);
+		
+		return Util.jsReplace("", "/sch/home/main");
 	}
 	
 	//로그아웃

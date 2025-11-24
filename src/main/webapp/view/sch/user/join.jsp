@@ -76,6 +76,7 @@
 				},
 				dataType: 'json',
 				success: function(data) {
+					console.log();
 					if (data.rsCode.startsWith("S-")) {
 						msg.removeClass('text-red-500');
 						msg.addClass('text-green-500');
@@ -92,12 +93,19 @@
 					console.log(error);
 				}
 			});
-		}
+		};
 		
 		//비밀번호 확인
 		const passwordChk = function(el) {
 			el.value = el.value.trim();
 			let msg = $('#pwMsg');
+			
+			if (el.value.length == 0) {
+				msg.removeClass('text-green-500');
+				msg.addClass('text-red-500');
+				msg.html('비밀번호를 입력하세요.');
+				return;
+			}
 			
 			$.ajax({
 				url: '/sch/user/passwordChk',
@@ -141,7 +149,7 @@
 					}
 				}
 			});
-		}
+		};
 		
 		const nameChk = function(el) {
 			let msg = $('#nameMsg');
@@ -163,7 +171,7 @@
 					}
 				}
 			});
-		}
+		};
 		
 		const sexChk = function(el) {
 			let msg = $('#sexMsg');
@@ -185,7 +193,7 @@
 					}
 				}
 			});
-		}
+		};
 	</script>
 
 	<section class="area">
@@ -195,25 +203,25 @@
 					<tr>
 						<td>
 							<input class="input" type="text" name="userId" placeholder="아이디" onblur="loginIdChk(this);" />
-							<div id="msg"></div>
+							<div class="message" id="msg"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<input class="input" type="password" name="password" placeholder="비밀번호" onblur="passwordChk(this);"/>
-							<div id="pwMsg"></div>
+							<input class="input" type="password" name="password" placeholder="비밀번호 (5자이상 입력)" onblur="passwordChk(this);"/>
+							<div class="message" id="pwMsg"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<input class="input" type="password" name="checkPw" placeholder="비밀번호 확인"  onblur="checkPwMatch(this);"/>
-							<div id="chekcPwMsg"></div>
+							<div class="message" id="chekcPwMsg"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<input class="input" type="text" name="name" placeholder="이름" onblur="nameChk(this);" />
-							<div id="nameMsg"></div>
+							<div class="message" id="nameMsg"></div>
 						</td>
 					</tr>
 					<tr>
@@ -223,11 +231,11 @@
 								<option value="male">남자</option>
 								<option value="female">여자</option>
 							</select>
-							<div id="sexMsg"></div>
+							<div class="message" id="sexMsg"></div>
 						</td>
 					</tr>
 					<tr>
-						<button class="btn btn-neutral">가입 요청</button>
+						<button class="btn btn-neutral" id="loginBtn">가입 요청</button>
 					</tr>
 				</div>
 			</form>	
