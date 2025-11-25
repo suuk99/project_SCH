@@ -16,20 +16,6 @@ public class AdminController {
 		this.userService = userService;
 	}
 	
-	//권한 변경
-	@GetMapping("/sch/admin/role")
-	@ResponseBody
-	public String setRole() {
-		
-		return "sch/admin/role";
-	}
-	
-	@PostMapping("/sch/amdin/setRole")
-	@ResponseBody
-	public String updateRole(String id, String role) {
-		this.userService.updateRole(id, role);
-		return "success";
-	}
 	
 	//시간표 업로드
 	@GetMapping("/sch/admin/uploadTimeTable")

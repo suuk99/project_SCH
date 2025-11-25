@@ -25,10 +25,13 @@ SELECT * FROM `user`;
 
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  userId VARCHAR(50) NOT NULL,
+  userId VARCHAR(20) NOT NULL,
   weekStart DATE NOT NULL,
-  ableTime TEXT NOT NULL,
-  confirm BOOLEAN NOT NULL
+  `weekDay` INT NOT NULL,
+  startTime TIME NOT NULL,
+  endTime TIME NOT NULL,
+  workStatus ENUM('yes', 'no') DEFAULT 'no',
+  confirm BOOLEAN DEFAULT 0
 );
 
 

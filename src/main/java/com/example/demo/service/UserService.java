@@ -55,10 +55,4 @@ public class UserService {
 	public void updatePw(String userId, String newPw) {
 		this.userDao.updatePw(userId, newPw);
 	}
-	
-	//관리자가 사용자 권한 변경
-	public void updateRole(String userId, String role) {
-		this.userDao.updateRole(userId, role);
-	}
-
 }

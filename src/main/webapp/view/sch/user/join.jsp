@@ -55,7 +55,7 @@
 				return false;
 			}
 			
-			if (form.birthDate.value.length() > 8) {
+			if (form.birthDate.value.length() > 7) {
 				alert('생년월일을 8자리로 입력하세요.');
 				form.birthDate.value = "";
 				form.birthDate.focus();
