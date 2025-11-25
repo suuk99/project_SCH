@@ -1,6 +1,7 @@
 CREATE DATABASE SCH;
 USE SCH;
 
+DROP TABLE `user`;
 
 CREATE TABLE `user` (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -9,7 +10,11 @@ CREATE TABLE `user` (
   `password` VARCHAR(100) NOT NULL,
   `role` VARCHAR(30) DEFAULT 'USER',
   sex VARCHAR(10) NOT NULL,
-  award VARCHAR(30)
+  award VARCHAR(30),
+  regDate DATETIME NOT NULL DEFAULT NOW(),
+  birthDate VARCHAR(8) NOT NULL,
+  phoneNum VARCHAR(11) NOT NULL
+   
 );
 
 INSERT INTO `user` (`name`, userId, `password`,sex) VALUES

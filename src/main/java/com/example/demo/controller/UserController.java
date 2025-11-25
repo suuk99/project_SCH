@@ -191,6 +191,10 @@ public class UserController {
 		
 		User user = userService.getUserLoginId(userId);
 		
+		if (nowPw.length() == 0) {
+			return Util.jsReplace("현재 비밀번호를 입력해 주세요.", "/sch/user/changePw");
+		}
+		
 		if (!user.getPassword().equals(nowPw)) {
 			return Util.jsReplace("현재 비밀번호가 일치하지 않습니다.", "/sch/user/changePw");
 		}

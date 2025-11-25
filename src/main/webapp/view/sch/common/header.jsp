@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/resource/css/Common.css" />
+    <link rel="shortcut icon" href="/resource/images/favicon.ico" />
    <!--  <script src="${pageContext.request.contextPath}/resource/js/common.js"></script> -->
 </head>
 <body>

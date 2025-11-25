@@ -35,4 +35,11 @@ public interface UserDao {
 				WHERE userId= #{userId}
 			""")
 	public void updatePw(String userId, String newPw);
+
+	@Update("""
+			UPDATE `user`
+				SET role = #{role}
+				WHERE userId = #{userId}
+			""")
+	public void updateRole(String userId, String role);
 }

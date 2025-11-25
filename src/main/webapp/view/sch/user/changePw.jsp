@@ -66,13 +66,13 @@
 					<tr>
 						<td>
 							<input class="input" type="password" name="nowPw" id="nowPw" placeholder="현재 비밀번호" />
-							<div></div>
+							<div style="margin-bottom: 25px;"></div>
 						</td>
 					</tr>
 					<tr>
 						<td>
 							<input class="input" type="password" name="newPw" id="newPw" placeholder="새 비밀번호 (5자이상 입력)" />
-							<div></div>
+							<div style="margin-bottom: 10px;"></div>
 						</td>
 					</tr>
 					<tr>

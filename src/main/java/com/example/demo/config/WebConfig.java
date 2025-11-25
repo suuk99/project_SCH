@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
 	private NeedLoginInterceptor needLoginInterceptor;
 	private NeedLogoutInterceptor needLogoutInterceptor;
 
-	public WebConfig(BeforeActionInterceptor beforeActionInterceptor, NeedLoginInterceptor needLoginInterceptor, NeedLogoutInterceptor needLogoutInterceptor) {
+	public WebConfig(BeforeActionInterceptor beforeActionInterceptor, NeedLoginInterceptor needLoginInterceptor,
+			NeedLogoutInterceptor needLogoutInterceptor) {
 		this.beforeActionInterceptor = beforeActionInterceptor;
 		this.needLoginInterceptor = needLoginInterceptor;
 		this.needLogoutInterceptor = needLogoutInterceptor;
@@ -23,12 +24,18 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		
+
 		registry.addInterceptor(beforeActionInterceptor).addPathPatterns("/**").excludePathPatterns("/resources/**");
-		
-		//usercontroller만 완료 나머지 추가하기
-		registry.addInterceptor(needLoginInterceptor).addPathPatterns("/sch/user/logout").addPathPatterns("/sch/user/information").addPathPatterns("/sch/user/changePw").addPathPatterns("/sch/user/selectSal");
-		
-		registry.addInterceptor(needLogoutInterceptor).addPathPatterns("/sch/user/login").addPathPatterns("/sch/user/join");
+
+		registry.addInterceptor(needLoginInterceptor).addPathPatterns("/sch/user/logout")
+				.addPathPatterns("/sch/user/information").addPathPatterns("/sch/user/changePw")
+				.addPathPatterns("/sch/user/selectSal").addPathPatterns("/sch/home/main")
+				.addPathPatterns("/sch/schedule/apply").addPathPatterns("/sch/schedule/confirm")
+				.addPathPatterns("/sch/schedule/list").addPathPatterns("/sch/schedule/swap")
+				.addPathPatterns("/sch/admin/uploadTimeTable").addPathPatterns("/sch/admin/approve")
+				.addPathPatterns("/sch/admin/write");
+
+		registry.addInterceptor(needLogoutInterceptor).addPathPatterns("/sch/user/login")
+				.addPathPatterns("/sch/user/join");
 	}
 }

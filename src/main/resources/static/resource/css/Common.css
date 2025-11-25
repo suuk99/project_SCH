@@ -30,6 +30,7 @@ body {
 	background-color: #ededeb;
 	margin-right: auto;
 	margin-left: auto;
+	border-radius: 10px;
 }
 
 /* 로그인 창 input 간격*/
@@ -68,7 +69,7 @@ body {
 
 .logo {
 	padding: 13px 0;
-	font-size: 34px;
+	font-size: 40px;
 	font-weight: bold;
 	margin: 0 120px;
 }

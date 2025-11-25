@@ -12,6 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/resource/css/Common.css" />
+    <link rel="shortcut icon" href="/resource/images/favicon.ico" />
    <!--  <script src="${pageContext.request.contextPath}/resource/js/common.js"></script> -->
 </head>
 <body>
@@ -45,7 +46,7 @@
 			</ul>
 		</div>
 		
-		<div class="ment">반갑습니다  ${sessionScope.loginUserName}  님</div>
+		<div class="ment">반갑습니다!  ${sessionScope.loginUserName}  님</div>
 		
 		<a class="logout" href="/sch/user/logout"> <i class="fa-solid fa-lock"></i> 로그아웃</a>
 	</section>
