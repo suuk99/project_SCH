@@ -15,8 +15,8 @@ public class UserService {
 	}
 	
 	//회원가입
-	public void joinUser(String userId, String password, String name, String sex) {
-		this.userDao.joinUser(userId, password, name, sex);
+	public void joinUser(String userId, String password, String name, String birthDate, String phoneNum, String sex) {
+		this.userDao.joinUser(userId, password, name, birthDate, phoneNum, sex);
 	}
 	
 	//아이디 가져오기
@@ -42,6 +42,18 @@ public class UserService {
 	//성별 확인
 	public boolean getSexChk(String sex) {
 		return sex != null && !sex.equals("0");
+	}
+
+	public boolean getBdChk(String birthDate) {
+		return birthDate != null && !birthDate.trim().isEmpty();
+	}
+
+	public boolean getPnChk(String phoneNum) {
+		return phoneNum != null && phoneNum.trim().isEmpty();
+	}
+
+	public void updatePw(String userId, String newPw) {
+		this.userDao.updatePw(userId, newPw);
 	}
 
 }

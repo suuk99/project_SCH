@@ -15,6 +15,8 @@
 			form.password.value = form.password.value.trim();
 			form.checkPw.value = form.checkPw.value.trim();
 			form.name.value = form.name.value.trim();
+			form.birthDate.value = form.birthDate.value.trim();
+			form.phoneNum.value = form.phoneNum.value.trim();
 			
 			if (form.userId.value.length == 0) {
 				alert('아이디를 입력하세요.');
@@ -45,6 +47,25 @@
 				form.userId.value = "";
 				form.userId.focus();
 				return false
+			}
+			
+			if (form.birthDate.value.length() == 0) {
+				alert('생년월일을 입력하세요.');
+				form.birthDate.focus();
+				return false;
+			}
+			
+			if (form.birthDate.value.length() > 8) {
+				alert('생년월일을 8자리로 입력하세요.');
+				form.birthDate.value = "";
+				form.birthDate.focus();
+				return false;
+			}
+			
+			if (form.phoneNum.value.length() == 0) {
+				alert('전화번호를 입력하세요.');
+				form.phoneNum.focus();
+				return false;
 			}
 			
 			if (form.sex.value == "0") {
@@ -173,6 +194,66 @@
 			});
 		};
 		
+		const bdChk = function(el) {
+			el.value = el.value.trim();
+			let msg = $('#bdMsg');
+			
+			if (el.value.length == 0) {
+				msg.removeClass('text-green-500');
+				msg.addClass('text-red-500');
+				msg.html('생년월일을 입력하세요.');
+				return;
+			}
+			
+			$.ajax({
+				url: '/sch/user/bdChk',
+				type: 'get',
+				data: {birthDate: el.value},
+				dataType: 'json',
+				success: function(data) {
+					if(data.rsCode.startsWith("S-")) {
+						msg.removeClass('text-red-500');
+						msg.addClass('text-green-500');
+						msg.html(data.rsMsg);
+					} else {
+						msg.removeClass('text-green-500');
+						msg.addClass('text-red-500');
+						msg.html(data.rsMsg);
+					}
+				}
+			});
+		};
+		
+		const pnChk = function(el) {
+			el.value = el.value.trim();
+			let msg = $('#pnMsg');
+			
+			if (el.value.length == 0) {
+				msg.removeClass('text-green-500');
+				msg.addClass('text-red-500');
+				msg.html('전화번호를 입력하세요.');
+				return;
+			}
+			
+			$.ajax({
+				url: '/sch/user/pnChk',
+				type: 'get',
+				data: {phoneNum: el.value},
+				dataType: 'json',
+				success: function(data) {
+					if(data.rsCode.startsWith("S-")) {
+						msg.removeClass('text-red-500');
+						msg.addClass('text-green-500');
+						msg.html(data.rsMsg);
+					} else {
+						msg.removeClass('text-green-500');
+						msg.addClass('text-red-500');
+						msg.html(data.rsMsg);
+					}
+				}
+			});
+		};
+		
 		const sexChk = function(el) {
 			let msg = $('#sexMsg');
 			
@@ -222,6 +303,18 @@
 						<td>
 							<input class="input" type="text" name="name" placeholder="이름" onblur="nameChk(this);" />
 							<div class="message" id="nameMsg"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input class="input" type="text" name="birthDate" placeholder="생년월일 8자리" onblur="bdChk(this);"/>
+							<div class="message" id="bdMsg"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input class="input" type="text" name="phoneNum" placeholder="전화번호 (-제외 입력)" onblur="pnChk(this);"/>
+							<div class="message" id="pnMsg"></div>
 						</td>
 					</tr>
 					<tr>

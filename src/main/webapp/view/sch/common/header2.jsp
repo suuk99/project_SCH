@@ -45,7 +45,7 @@
 			</ul>
 		</div>
 		
-		<div class="ment">반갑습니다 ${sessionScope.loginUserName} 님</div>
+		<div class="ment">반갑습니다  ${sessionScope.loginUserName}  님</div>
 		
-		<a class="logout" href="/sch/user/logout"> 🔒로그아웃</a>
+		<a class="logout" href="/sch/user/logout"> <i class="fa-solid fa-lock"></i> 로그아웃</a>
 	</section>

@@ -3,6 +3,7 @@ package com.example.demo.dao;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.example.demo.dto.User;
 
@@ -15,9 +16,11 @@ public interface UserDao {
 					userId = #{userId},
 					password = #{password},
 					`name` = #{name},
+					birthDate = #{birthDate},
+					phoneNum = #{phoneNum},
 					sex = #{sex}
 			""")
-	public void joinUser(String userId, String password, String name, String sex);
+	public void joinUser(String userId, String password, String name, String birthDate, String phoneNum, String sex);
 
 	@Select("""
 			SELECT * 
@@ -25,4 +28,11 @@ public interface UserDao {
 				WHERE userId = #{userId}
 			""")
 	public User getUserLoginId(String userId);
+
+	@Update("""
+			UPDATE `user`
+				SET password = #{newPw}
+				WHERE userId= #{userId}
+			""")
+	public void updatePw(String userId, String newPw);
 }

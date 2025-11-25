@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,9 +30,9 @@ public class UserController {
 	
 	@PostMapping("/sch/user/doJoin")
 	@ResponseBody
-	public String doJoin(String userId, String password, String checkPw, String name, String sex) {
+	public String doJoin(String userId, String password, String checkPw, String name, String birthDate, String phoneNum, String sex) {
 		
-		this.userService.joinUser(userId, password, name, sex);
+		this.userService.joinUser(userId, password, name, birthDate, phoneNum, sex);
 		
 		return Util.jsReplace("회원가입이 요청이 완료되었습니다.", "/sch/user/login");
 	}
@@ -87,7 +88,28 @@ public class UserController {
 	    }
 	    return new ResultData<>("S-1", " ");
 	}
+	
+	@GetMapping("/sch/user/bdChk")
+	@ResponseBody
+	public ResultData checkBd(String birthDate) {
+	    boolean isValid = this.userService.getBdChk(birthDate);
+	    
+	    if (!isValid) {
+	        return new ResultData<>("F-1", "생년월일을 입력하세요.");
+	    }
+	    return new ResultData<>("S-1", " ");
+	}
 
+	@GetMapping("/sch/user/pnChk")
+	@ResponseBody
+	public ResultData checkPn(String phoneNum) {
+	    boolean isValid = this.userService.getPnChk(phoneNum);
+	    
+	    if (!isValid) {
+	        return new ResultData<>("F-1", "전화번호를 입력하세요.");
+	    }
+	    return new ResultData<>("S-1", " ");
+	}
 	@GetMapping("/sch/user/sexChk")
 	@ResponseBody
 	public ResultData checkSex(String sex) {
@@ -126,7 +148,7 @@ public class UserController {
 	public String doLogin(HttpSession session, Integer loginUserId, String userId) {
 		User user = this.userService.getUserLoginId(userId);
 
-		session.setAttribute("loginUserId", user.getId());
+		session.setAttribute("loginUserId", user.getUserId());
 		session.setAttribute("loginUserName", user.getName());
 		return Util.jsReplace("", "/sch/home/main");
 	}
@@ -143,7 +165,16 @@ public class UserController {
 	
 	//내정보
 	@GetMapping("/sch/user/information")
-	public String selectInfo() {
+	public String selectInfo(HttpSession session, Model model) {
+		
+		Object obj = session.getAttribute("loginUserId");
+		
+		String userId = String.valueOf(obj);
+		
+		User user = userService.getUserLoginId(userId);
+		
+		model.addAttribute("user", user);
+		
 		return "sch/user/information";
 	}
 	
@@ -151,6 +182,30 @@ public class UserController {
 	@GetMapping("/sch/user/changePw")
 	public String changePw() {
 		return "sch/user/changePw";
+	}
+	
+	@PostMapping("/sch/user/doChangePw")
+	@ResponseBody
+	public String doChangePw(HttpSession session, String password, String nowPw, String checkPw, String newPw) {
+		String userId = (String) session.getAttribute("loginUserId");
+		
+		User user = userService.getUserLoginId(userId);
+		
+		if (!user.getPassword().equals(nowPw)) {
+			return Util.jsReplace("현재 비밀번호가 일치하지 않습니다.", "/sch/user/changePw");
+		}
+		
+		if (!newPw.equals(checkPw)) {
+			return Util.jsReplace("새 비밀번호가 일치하지 않습니다.", "/sch/user/changePw");
+		}
+		
+		if (newPw.length() < 5 || checkPw.length() < 5) {
+			return Util.jsReplace("비밀번호는 5자 이상이어야 합니다.", "/sch/user/changePw");
+		}
+		
+		this.userService.updatePw(userId, newPw);
+		
+		return Util.jsReplace("비밀번호 변경이 완료되었습니다", "/sch/home/main");
 	}
 	
 	//급여조회

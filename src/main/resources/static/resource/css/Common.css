@@ -17,13 +17,13 @@ body {
 }
 
 .table {
-	margin-top: 240px;
+	margin-top: 180px;
 	text-align: center;
 }
 
 /* 로그인 박스 */
 .table_login {
-	margin-top: 200px;
+	margin-top: 220px;
 	text-align: center;
 	height: 450px;
 	width: 400px;
@@ -99,6 +99,15 @@ body {
 	display: block;
 	margin-top: 10px;
 	background-color: white;
+}
+
+/* 내정보 */
+table {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	font-size: 17px;
 }
 
 
