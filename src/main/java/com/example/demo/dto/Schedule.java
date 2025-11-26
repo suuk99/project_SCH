@@ -16,4 +16,5 @@ public class Schedule {
 	private String startTime;		// HH:mm
 	private String endTime;			// HH:mm
 	private boolean confirm;		// 승인 여부
+	private String workStatus;
 }

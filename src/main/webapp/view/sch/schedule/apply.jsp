@@ -105,8 +105,8 @@
 						<div style="margin-bottom: 13px;"></div>
 					</tr>
 					<tr>
-						<button class="btn btn-neutral" type="button" onclick="submitSchedule()" style="width: 188px; margin: 0 18px;">임시 저장</button>
-						<button class="btn btn-neutral" style="width: 188px; margin-right: 18px;">최종 신청</button>
+						<button class="btn btn-neutral" id="saveBtn" type="button" style="width: 188px; margin: 0 18px;">임시 저장</button>
+						<button class="btn btn-neutral" id="applyBtn" type="button" onclick="submitSchedule()" style="width: 188px; margin-right: 18px;">최종 신청</button>
 					</tr>
 				</div>
 			</form>
@@ -114,12 +114,13 @@
 	</section>
 	
 	<script>
+		// 최종신청 
 		function submitSchedule() {
 			var formData = $('#scheduleForm').serialize();
 
 			$.ajax({
-				url: '/sch/schedule/apply',
-				type: 'post',  //내일 get post 구분 확실히
+				url: '/sch/schedule/doApply',
+				type: 'post',  
 				data: formData,
 				success: function(data) {
 					alert(data.msg);
@@ -129,5 +130,33 @@
 				}
 			});
 		}
+		
+		$(document).ready(function(){
+		    var userId = '${loginUserId}';
+		    
+		    // 임시저장
+		    $('#saveBtn').on('click', function() {
+		        let data = {};
+		        $('#scheduleForm').find('input, select').each(function () {
+		            const name = $(this).attr('name');
+		            const value = $(this).val();
+		            if (name) data[name] = value;
+		        });
+		        
+		        localStorage.setItem('scheduleData_' + userId, JSON.stringify(data));
+		        alert("저장 완료되었습니다.");
+		    });
+		    
+		    // 저장된 정보 불러오기
+		    let saved = localStorage.getItem('scheduleData_' + userId);
+		    if (saved) {
+		        saved = JSON.parse(saved);
+		        $('#scheduleForm').find('input, select').each(function(){
+		            const name = $(this).attr('name');
+		            if (saved[name] != undefined) $(this).val(saved[name]);
+		        });
+		    }
+		});
+
 	</script>
 <%@ include file="/view/sch/common/footer.jsp"%>
