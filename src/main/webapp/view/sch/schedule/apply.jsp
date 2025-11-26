@@ -123,7 +123,7 @@
 				type: 'post',  
 				data: formData,
 				success: function(data) {
-					alert(data.msg);
+					alert("근무 신청이 완료되었습니다.");
 				},
 				error: function() {
 					alert('오류 발생');

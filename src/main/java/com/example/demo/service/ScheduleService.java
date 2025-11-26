@@ -8,19 +8,14 @@ import com.example.demo.dto.Schedule;
 @Service
 public class ScheduleService {
 	
-	private ScheduleDao shceduleDao;
+	private ScheduleDao scheduleDao;
 	
 	public ScheduleService(ScheduleDao shceduleDao) {
-		this.shceduleDao = shceduleDao;
-	}
-	
-	public void doApply() {
-		this.shceduleDao.doApply();
+		this.scheduleDao = shceduleDao;
 	}
 
-	public void save(Schedule schedule) {
-		// TODO Auto-generated method stub
-		
+	public void saveSchedule(Schedule schedule) {
+		this.scheduleDao.saveSchedule(schedule);
 	}
 
 }

@@ -1,5 +1,8 @@
 package com.example.demo.controller;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.springframework.stereotype.Controller;
@@ -33,24 +36,29 @@ public class ScheduleController {
 		return "sch/schedule/apply";
 	}
 	
-	
 	@PostMapping("/sch/schedule/doApply")
 	@ResponseBody
-	public ResultData doApply(@RequestParam("workStatus") String[] workStatus,
-							  @RequestParam("startTime") String[] startTime,
-							  @RequestParam("endTime") String[] endTime,
+	public ResultData doApply(@RequestParam Map<String, String> params,
 							  @SessionAttribute("loginUserId") String userId) {
 		
-		for (int i = 0; i < 7; i ++) {
+		LocalDate today = LocalDate.now();
+		LocalDate monday = today.with(DayOfWeek.MONDAY);
+		
+		for (int i = 1; i <= 7; i ++) {
 			Schedule schedule = new Schedule();
+			
+			String startTime = params.get("startTime" + i);
+			String endTime = params.get("endTime" + i);
+			
 			schedule.setUserId(userId);
-			schedule.setWeekDay(i + 1); 
-	        schedule.setWorkStatus(workStatus[i]);
-	        schedule.setStartTime(startTime[i]);
-	        schedule.setEndTime(endTime[i]);
+			schedule.setWeekDay(i); 
+	        schedule.setWorkStatus(params.get("workStatus" + i));
+	        schedule.setStartTime((startTime != null && !startTime.isEmpty()) ? startTime : null);
+	        schedule.setEndTime((endTime != null && !endTime.isEmpty()) ? endTime : null);
+	        schedule.setWeekStart(monday);
 	        schedule.setConfirm(false);
 	        
-	        scheduleService.save(schedule);
+	        scheduleService.saveSchedule(schedule);
 		}
 		
 		return new ResultData<>("S-1", "근무신청이 완료되었습니다.");
