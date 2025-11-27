@@ -1,0 +1,46 @@
+CREATE DATABASE SCH;
+USE SCH;
+
+CREATE TABLE `user` (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(20) NOT NULL,
+  userId VARCHAR(50) NOT NULL UNIQUE,
+  `password` VARCHAR(100) NOT NULL,
+  `role` VARCHAR(30) DEFAULT 'USER',
+  sex VARCHAR(10) NOT NULL,
+  award VARCHAR(30),
+  regDate DATETIME NOT NULL DEFAULT NOW(),
+  birthDate VARCHAR(8) NOT NULL,
+  phoneNum VARCHAR(11) NOT NULL
+   
+);
+
+CREATE TABLE userSchedule(
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  userId VARCHAR(20) NOT NULL,
+  weekStart DATE NOT NULL,
+  `weekDay` INT NOT NULL,
+  startTime TIME,
+  endTime TIME,
+  workStatus ENUM('yes', 'no') DEFAULT 'no',
+  confirm BOOLEAN DEFAULT 0
+);
+        
+SELECT * FROM userSchedule;
+
+CREATE TABLE timeTable (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  weekStart DATE NOT NULL,
+  assignedTime TEXT NOT NULL,
+  `status` VARCHAR(30) NOT NULL DEFAULT 'UPLOAD'
+);
+
+CREATE TABLE notice (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(50) NOT NULL,
+    content TEXT NOT NULL,
+    writerId VARCHAR(30) NOT NULL,
+    regDate DATETIME NOT NULL DEFAULT NOW(),
+    updateDate DATETIME,
+    hit INT NOT NULL DEFAULT 0
+);

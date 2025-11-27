@@ -1,0 +1,120 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: 'Suit';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-display: swap;
+}
+
+html * {
+	font-family: 'Suit';
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.table {
+	margin-top: 180px;
+	text-align: center;
+}
+
+/* 로그인 박스 */
+.table_login {
+	margin-top: 220px;
+	text-align: center;
+	height: 450px;
+	width: 400px;
+	background-color: #ededeb;
+	margin-right: auto;
+	margin-left: auto;
+	border-radius: 10px;
+}
+
+/* 로그인 창 input 간격*/
+#input {
+	margin-bottom: 14px;
+}
+/* 로그인화면 로고 */
+.logo_login {
+	font-weight: bold;
+	font-size: 49px;
+	padding-top: 48px;
+	padding-bottom: 30px;
+}
+/* 비동기 문구 칸 */
+.message {
+    min-height: 20px;   
+    line-height: 18px;
+    font-size: 15px;
+    margin-top: 3px;
+}
+
+/* 로그인 회원가입 창 버튼 */
+.btn {
+	width: 320px;
+	font-size: 15px;
+	margin: 9px 0;
+}
+
+/* 상단바 */
+.header {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-bottom: 1px solid black;
+}
+
+.logo {
+	padding: 13px 0;
+	font-size: 40px;
+	font-weight: bold;
+	margin: 0 120px;
+}
+
+.ment {
+	margin-left: 20%;
+	font-weight: bold;
+}
+
+.menu {
+	position: relative;
+	font-size: 17px;
+	font-weight: bold;
+	padding: 10px;
+	margin-left: 30px;
+}
+
+.menu > ul {
+	position: absolute;
+	display: none;	
+	width: 150px;
+	font-size: 14px;
+	font-weight: normal;
+	top: 65%;
+}
+
+.menu:hover > ul {
+	display: block;
+	margin-top: 10px;
+	background-color: white;
+}
+
+/* 내정보 */
+table {
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	font-size: 17px;
+}
+
+/* 공지사항 버튼 */
+#nBtn {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+

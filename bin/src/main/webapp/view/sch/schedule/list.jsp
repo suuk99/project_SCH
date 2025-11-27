@@ -1,17 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-
+    
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<c:set var="pageTitle" value="main" />
+<c:set var="pageTitle" value="근무시간 조회" />
 
 <%@ include file="/view/sch/common/header2.jsp"%>
-
-<section>
-	<div>
-		<div><a href="/sch/notice/write">공지사항 글쓰기</a></div>
-		<div><a href="/sch/notice/list">공지사항 </a></div>
-	</div>
-</section>
-
+	<div>근무시간 조회</div>
 <%@ include file="/view/sch/common/footer.jsp"%>
