@@ -16,7 +16,6 @@ public class AdminController {
 		this.userService = userService;
 	}
 	
-	
 	//시간표 업로드
 	@GetMapping("/sch/admin/uploadTimeTable")
 	public String uploadTimeTable() {
