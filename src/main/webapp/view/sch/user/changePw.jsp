@@ -59,7 +59,7 @@
 	</script>
 	
 	<section class="area">
-		<div class="table">
+		<div class="table" style="margin-top: 140px;">
 			<form action="/sch/user/doChangePw" method="post" onsubmit="return changeForm(this);">
 				<div class="table-box">
 					<div style="font-size: 23px; font-weight: bold; margin-bottom: 27px;">비밀번호 변경</div>

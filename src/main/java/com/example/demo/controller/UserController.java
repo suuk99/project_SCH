@@ -149,6 +149,7 @@ public class UserController {
 		User user = this.userService.getUserLoginId(userId);
 
 		session.setAttribute("loginUserId", user.getUserId());
+		session.setAttribute("loginUserID", user.getId());
 		session.setAttribute("loginUserName", user.getName());
 		return Util.jsReplace("", "/sch/home/main");
 	}

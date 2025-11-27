@@ -111,5 +111,10 @@ table {
 	font-size: 17px;
 }
 
+/* 공지사항 버튼 */
+#nBtn {
+	margin-left: auto;
+	margin-right: auto;
+}
 
 

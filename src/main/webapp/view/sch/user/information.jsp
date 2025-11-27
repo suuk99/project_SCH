@@ -7,7 +7,7 @@
 
 <%@ include file="/view/sch/common/header2.jsp"%>
 	<section class="area">
-		<div class="table">
+		<div class="table" style="margin-top: 140px;">
 			<table> 
 				<div class="profile" style="font-size: 23px; font-weight: bold; margin-bottom: 15px;">프로필</div>
 				<tr>

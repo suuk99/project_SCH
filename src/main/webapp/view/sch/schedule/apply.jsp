@@ -8,7 +8,7 @@
 <%@ include file="/view/sch/common/header2.jsp"%>
 	
 	<section class="area">
-		<div class="table">
+		<div class="table" style="margin-top: 120px;">
 			<form id="scheduleForm">
 				<div class="table-box">
 					<div style="font-size: 25px; font-weight: bold; padding: 15px; margin-bottom: 15px;">근무 신청</div>
