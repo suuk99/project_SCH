@@ -20,11 +20,27 @@ public class NoticeService {
 		this.noticeDao.doWrite(title, content, loingUserID);
 	}
 
-	public List<Notice> showNoticeList() {
-		return this.noticeDao.showNoticeList();
+	public List<Notice> showNoticeList(int limitFrom, int itemsInAPage) {
+		return this.noticeDao.showNoticeList(limitFrom, itemsInAPage);
 	}
 
 	public Notice getNoticeId(int id) {
 		return this.noticeDao.getNoticeId(id);
+	}
+
+	public void delete(int id) {
+		this.noticeDao.delete(id);
+	}
+
+	public void modifyNotice(int id, String title, String content) {
+		this.noticeDao.modifyNotice(id, title, content);
+	}
+
+	public void addHit(int id) {
+		this.noticeDao.addHit(id);
+	}
+
+	public int getArticlesCnt() {
+		return this.noticeDao.getArticlesCnt();
 	}
 }

@@ -8,14 +8,14 @@
 	
 		<section>
 			<div style="margin-top: 120px; width: 800px; margin-right: auto; margin-left: auto;">
-			<div style="font-size: 26px; font-weight: bold; margin-bottom: 20px; border-bottom: 1px solid #dedede; padding: 10px 0;">공지사항</div>
+			<div style="font-size: 26px; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #dedede; padding: 10px 0;">공지사항</div>
 				<table style="width:100%; border-collapse: collapse; text-align: center;">
 				 	<tr>
-		                <th style="padding: 0px 15px 20px 20px; width: 30px;"></th>
-		                <th style="padding: 0px 15px 20px 20px; width: 300px;">제목</th>
-		                <th style="padding: 0px 15px 20px 20px;">작성자</th>
-		                <th style="padding: 0px 15px 20px 20px;">작성일</th>
-		                <th style="padding: 0px 15px 20px 20px;">조회수</th>
+		                <th style="width: 30px; padding: 0 3px;"></th>
+		                <th style="width: 300px; padding: 0 3px 8px 5px;">제목</th>
+						<th style="padding: 0 3px 8px 5px;">작성자</th>
+						<th style="padding: 0 3px 8px 5px;">작성일</th>
+						<th style="padding: 0 3px 8px 5px;">조회수</th>
             		</tr>
 					
 					<c:forEach var="notice" items="${noticeList}">
@@ -28,6 +28,30 @@
 						</tr>
 					</c:forEach>
 				</table>
+				<div style="text-align: right; margin-top: 15px;">
+					<button class="btn btn-neutral" onclick="location.href='/sch/home/main'" style="width: 80px; margin-right: 8px;">홈으로</button>
+					<c:if test="${sessionScope.loginUserRole == 'ADMIN' }">
+						<button class="btn btn-neutral" onclick="location.href='/sch/notice/write'" style="width: 80px;">글쓰기</button>
+					</c:if>
+				</div>
+				
+				<div class="flex justify-center">
+					<div class="join">
+						<c:set var="queryString" value="?boardId=${param.boardId }" />
+					
+						<c:if test="${begin != 1 }">
+							<a class="join-item btn btn-sm" href="${queryString }&cPage=1"><i class="fa-solid fa-angles-left"></i></a>
+							<a class="join-item btn btn-sm" href="${queryString }&cPage=${begin - 1 }"><i class="fa-solid fa-caret-left"></i></a>
+						</c:if>
+						<c:forEach begin="${begin }" end="${end }" var="i">
+							<a class="join-item btn btn-sm ${cPage == i ? 'btn-active' : '' }" href="${queryString }&cPage=${i }">${i }</a>
+						</c:forEach>
+						<c:if test="${end != totalPagesCnt }">
+							<a class="join-item btn btn-sm" href="${queryString }&cPage=${end + 1 }"><i class="fa-solid fa-caret-right"></i></a>
+							<a class="join-item btn btn-sm" href="${queryString }&cPage=${totalPagesCnt }"><i class="fa-solid fa-angles-right"></i></a>
+						</c:if>
+					</div>
+				</div>
 			</div>
 		</section>
 <%@ include file="/view/sch/common/footer.jsp"%>

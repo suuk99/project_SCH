@@ -3,11 +3,11 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
-<c:set var="pageTitle" value="게시글 작성" />
+<c:set var="pageTitle" value="게시글 수정" />
 <%@ include file="/view/sch/common/header2.jsp"%>
-
+	
 	<script>
-		const writeForm = function(form) {
+		const modifyForm = function(form) {
 			form.title.value = form.title.value.trim();
 			form.content.value = form.content.value.trim();
 			
@@ -28,20 +28,22 @@
 	
 	<section>
 		<div style="margin-top: 120px; width: 600px; margin-right: auto; margin-left: auto;">
-			<form action="/sch/notice/doWrite" method="post" onsubmit="return writeForm(this);">
+			<form action="/sch/notice/doModify" method="post" onsubmit="return modifyForm(this);">
+				<input type="hidden" name="id" value="${notice.id}" />
 				<div style="font-size: 26px; font-weight: bold; text-align: left; margin-bottom: 20px; border-bottom: 1px solid #dedede; padding: 10px 0;">
-				공지사항 작성</div>
+				게시글 수정</div>
 				<div class="table-box">
 	                <div>
-	                    <input class="input" type="text" name="title" placeholder="제목을 입력하세요." style="width: 600px;" />
+	                    <input class="input" type="text" name="title" value="${notice.title}" style="width: 600px;" />
 	                    <div style="margin-bottom: 25px;"></div>
 	                </div>
 	                <div>
-	                    <textarea class="textarea" name="content" placeholder="내용을 입력하세요." style="width: 600px; height: 400px;"></textarea>
+	                    <textarea class="textarea" name="content" placeholder="내용을 입력하세요." style="width: 600px; height: 400px;">${notice.content}</textarea>
 	                    <div style="margin-bottom: 10px;"></div>
 	                </div>
 	                <div style="text-align: right;">
-    					<button class="btn btn-neutral" style="width: 70px;">등록</button>
+    					<button class="btn btn-neutral" onclick="history.back()" style="width: 70px;">이전</button>
+    					<button class="btn btn-neutral" style="width: 70px;">완료</button>
 					</div>
 				</div>
 			</form>

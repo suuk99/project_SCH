@@ -117,4 +117,16 @@ table {
 	margin-right: auto;
 }
 
-
+/* 페이징 버튼*/
+.join-item.btn.btn-sm {
+    padding: 3px 6px;       
+    font-size: 13px;         
+    margin: 0 2px;         
+    border-radius: 4px; 
+    width: 27px;   
+    height: 30px;  
+}
+.join-item.btn.btn-sm.btn-active {
+    background-color: #dcdede;
+    border-color: #dcdede;
+}

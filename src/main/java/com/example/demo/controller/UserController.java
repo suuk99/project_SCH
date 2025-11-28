@@ -145,12 +145,19 @@ public class UserController {
 	
 	@PostMapping("/sch/user/doLogin")
 	@ResponseBody
-	public String doLogin(HttpSession session, Integer loginUserId, String userId) {
+	public String doLogin(HttpSession session, Integer loginUserId, String userId, String password) {
 		User user = this.userService.getUserLoginId(userId);
+		
+		if (user == null || !user.getPassword().equals(password)) {
+	        return Util.jsReplace("아이디 또는 비밀번호를 확인해 주세요.", "/sch/user/login");
+	    }
 
 		session.setAttribute("loginUserId", user.getUserId());
 		session.setAttribute("loginUserID", user.getId());
 		session.setAttribute("loginUserName", user.getName());
+		session.setAttribute("loginUserRole", user.getRole());
+		session.setAttribute("loginUser", user);
+		
 		return Util.jsReplace("", "/sch/home/main");
 	}
 	

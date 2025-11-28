@@ -11,9 +11,11 @@ CREATE TABLE `user` (
   award VARCHAR(30),
   regDate DATETIME NOT NULL DEFAULT NOW(),
   birthDate VARCHAR(8) NOT NULL,
-  phoneNum VARCHAR(11) NOT NULL
-   
+  phoneNum VARCHAR(11) NOT NULL   
 );
+
+SELECT userId, ROLE FROM USER WHERE userId = 'sss';
+SELECT * FROM `user`;
 
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -35,12 +37,19 @@ CREATE TABLE timeTable (
   `status` VARCHAR(30) NOT NULL DEFAULT 'UPLOAD'
 );
 
+DROP TABLE notice;
 CREATE TABLE notice (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     content TEXT NOT NULL,
-    writerId VARCHAR(30) NOT NULL,
+    writerId INT UNSIGNED NOT NULL,
     regDate DATETIME NOT NULL DEFAULT NOW(),
-    updateDate DATETIME,
+    updateDate DATETIME, -> 없애도 될듯
     hit INT NOT NULL DEFAULT 0
 );
+
+//테스트 데이터
+INSERT INTO notice (regDate, writerId, title, content)
+SELECT NOW(), FLOOR(RAND() * 3) + 2, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
+   
+SELECT * FROM notice;
