@@ -7,9 +7,13 @@
 
 <%@ include file="/view/sch/common/header2.jsp"%>
 
-<section>
+<section style="margin-top: 150px; margin-left: auto; margin-right: auto; width: 70%; background-color: red;">
 	<div>
-		<div><a href="/sch/notice/write">공지사항 글쓰기</a></div>
+	 dfsfsfs
+	</div>
+	
+	<div style="display: flex;">
+		<div><a href="/sch/notice/write">글쓰기</a></div>
 		<div><a href="/sch/notice/list">공지사항 </a></div>
 	</div>
 </section>

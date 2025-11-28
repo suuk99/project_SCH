@@ -1,6 +1,7 @@
 CREATE DATABASE SCH;
 USE SCH;
 
+
 CREATE TABLE `user` (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(20) NOT NULL,
@@ -14,8 +15,6 @@ CREATE TABLE `user` (
   phoneNum VARCHAR(11) NOT NULL   
 );
 
-SELECT userId, ROLE FROM USER WHERE userId = 'sss';
-SELECT * FROM `user`;
 
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -37,7 +36,7 @@ CREATE TABLE timeTable (
   `status` VARCHAR(30) NOT NULL DEFAULT 'UPLOAD'
 );
 
-DROP TABLE notice;
+
 CREATE TABLE notice (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
@@ -48,8 +47,23 @@ CREATE TABLE notice (
     hit INT NOT NULL DEFAULT 0
 );
 
+SELECT * FROM notice;
+
+
+CREATE TABLE salary (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    `month` VARCHAR(10) NOT NULL,  //급여 월
+    hourly_rate INT UNSIGNED NOT NULL, //시급
+    total_hours DECIMAL(5,2) NOT NULL, // 총 근무 시간
+    gross_pay INT UNSIGNED NOT NULL,	// 총 급여 
+    deductions INT UNSIGNED NOT NULL,	// 공제금액
+    net_pay INT UNSIGNED NOT NULL	// 실수령액
+);
+
+
+
 //테스트 데이터
 INSERT INTO notice (regDate, writerId, title, content)
 SELECT NOW(), FLOOR(RAND() * 3) + 2, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
    
-SELECT * FROM notice;
