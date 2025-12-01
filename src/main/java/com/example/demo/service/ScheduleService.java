@@ -1,5 +1,9 @@
 package com.example.demo.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.ScheduleDao;
@@ -16,6 +20,10 @@ public class ScheduleService {
 
 	public void saveSchedule(Schedule schedule) {
 		this.scheduleDao.saveSchedule(schedule);
+	}
+
+	public List<Map<String, Object>> getScheduleByUser(String userId, LocalDate monday) {
+		return this.scheduleDao.getScheduleByUser(userId, monday);
 	}
 
 }

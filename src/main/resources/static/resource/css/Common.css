@@ -130,3 +130,9 @@ table {
     background-color: #dcdede;
     border-color: #dcdede;
 }
+
+/* 캘린더 선택 주 배경색 변경 */
+.select-week {
+	background-color: #ededed;
+}
+
