@@ -50,38 +50,42 @@ public class ScheduleController {
 	public String doApply(HttpSession session, HttpServletRequest request) {
 	    String userId = (String) session.getAttribute("loginUserId");
 	    String weekStartStr = request.getParameter("weekStart");
-	    
-	    LocalDate weekStart = LocalDate.parse(weekStartStr);
-	    
-	    for (int i = 1; i <= 7; i ++) {
-	        String workStatus = request.getParameter("workStatus"+ i);
-	        String startTime = request.getParameter("startTime" + i);
-	        String endTime = request.getParameter("endTime" + i);
-	        
-	        if (workStatus == null || workStatus.isEmpty()) {
+
+	    if(weekStartStr == null || weekStartStr.isEmpty()) return "주 시작일이 필요합니다.";
+
+	    LocalDate weekStart;
+	    try {
+	        weekStart = LocalDate.parse(weekStartStr);
+	    } catch(Exception e) {
+	        return "주 시작일 형식이 잘못되었습니다.";
+	    }
+
+	    for (int i = 1; i <= 7; i++) {
+	        String workStatus = request.getParameter("workStatus" + i);
+	        String startTimeStr = request.getParameter("startTime" + i);
+	        String endTimeStr = request.getParameter("endTime" + i);
+
+	        // 근무 여부 강제 검증
+	        if(!"yes".equals(workStatus) && !"no".equals(workStatus)) {
 	            return i + "요일 근무 여부를 선택해주세요.";
 	        }
 
-	        // 근무 선택 시 시간 입력 확인
-	        if ("yes".equals(workStatus) && (startTime == null || startTime.isEmpty() || endTime == null || endTime.isEmpty())) {
-	            return i + "요일 출퇴근 시간을 모두 입력해주세요.";
+	        // 근무 선택 시 출퇴근 시간 필수 검사
+	        if("yes".equals(workStatus)) {
+	            if(startTimeStr == null || startTimeStr.isEmpty() || endTimeStr == null || endTimeStr.isEmpty()) {
+	                return i + "요일 출퇴근 시간을 모두 입력해주세요.";
+	            }
 	        }
-	        
+
 	        Schedule s = new Schedule();
 	        s.setUserId(userId);
 	        s.setWeekStart(weekStart);
 	        s.setWeekDay(i);
 	        s.setWorkStatus(workStatus);
-	        s.setStartTime(request.getParameter("startTime"+i));
-	        s.setEndTime(request.getParameter("endTime"+i));
 	        s.setConfirm(false);
 
-	        if(s.getStartTime() != null && s.getStartTime().isEmpty()) {
-	            s.setStartTime(null);
-	        }
-	        if(s.getEndTime() != null && s.getEndTime().isEmpty()) {
-	            s.setEndTime(null);
-	        }
+	
+
 	        scheduleService.saveSchedule(s);
 	    }
 
