@@ -12,14 +12,15 @@
 	<section class="area">
 		<div class="table" style="margin-top: 120px;">
 			<form id="scheduleForm">
+				<input type="hidden" name="weekStart" value="">
 				<div class="table-box">
 					<div style="font-size: 25px; font-weight: bold; padding: 15px; margin-bottom: 15px;">근무 신청</div>
-					<div id="calendar" style="max-width: 500px; height: 500px; margin-right: auto; margin-left: auto; margin-bottom: 50px;"></div>
+					<div id="calendar" style="max-width: 520px; height: 500px; margin-right: auto; margin-left: auto; margin-bottom: 50px;"></div>
 					<tr>
 						<td>월요일</td>
 						<td>
-							<select class="select" name="workStatus1" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus1" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -32,8 +33,8 @@
 					<tr>
 						<td>화요일</td>
 						<td>
-							<select class="select" name="workStatus2" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus2" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -45,8 +46,8 @@
 					<tr>
 						<td>수요일</td>
 						<td>
-							<select class="select" name="workStatus3" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus3" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -58,8 +59,8 @@
 					<tr>
 						<td>목요일</td>
 						<td>
-							<select class="select" name="workStatus4" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus4" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -71,8 +72,8 @@
 					<tr>
 						<td>금요일</td>
 						<td>
-							<select class="select" name="workStatus5" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus5" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -84,8 +85,8 @@
 					<tr>
 						<td>토요일</td>
 						<td>
-							<select class="select" name="workStatus6" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus6" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -97,8 +98,8 @@
 					<tr>
 						<td>일요일</td>
 						<td>
-							<select class="select" name="workStatus7" style="width:90px; height: 30px; margin: 0 10px;">
-								<option class="select" disabled selected value="0">--</option>
+							<select class="select" name="workStatus7" style="width:90px; height: 30px; margin: 0 22px;">
+								<option class="select" disabled selected value="">--</option>
 								<option class="select" value="yes">근무</option>
 								<option class="select" value="no">휴무</option>
 							</select>
@@ -117,11 +118,21 @@
 	</section>
 	
 	<script>
-		console.log("loginUserId:", '${loginUserId}');
+		
+		// 폼 비활성화 -> 수정 불가능
+		function disableForm() {
+			$("#scheduleForm input, #scheduleForm select").attr("disabled", true);
+		}
+		// 폼 활성화
+		function enableForm() {
+			$("#scheduleForm input, #scheduleForm select").attr("disabled", false);
+		}
+	
 		$(function(){
 		    var userId = '${loginUserId}';
-		    var selectWeek = [];
-		
+		    var selectWeek = []; // 클릭한 주 배열
+		    var currentWeekStart = null; // 현재 선택한 주 시작일
+	
 		    // FullCalendar 초기화
 		    var calendarEl = document.getElementById('calendar');
 		    var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -129,77 +140,79 @@
 		        locale: 'ko',
 		        firstDay: 1,
 		        dateClick: function(info) {
-		            var clicked = new Date(info.dateStr);
-		            var day = clicked.getDay();
-		            var diffToMonday = day === 0 ? -6 : 1 - day;
-		            var monday = new Date(clicked);
-		            monday.setDate(clicked.getDate() + diffToMonday);
-		
-		            // 이번 주 날짜 배열
-		            selectWeek = [];
-		            for(var i=0; i<7; i++){
-		                var d = new Date(monday);
-		                d.setDate(d.getDate() + i);
-		                selectWeek.push(d.toISOString().substring(0,10));
-		            }
-		
-		            // weekStart
-		            var yyyy = monday.getFullYear();
-		            var mm = ("0" + (monday.getMonth()+1)).slice(-2);
-		            var dd = ("0" + monday.getDate()).slice(-2);
-		            var weekStart = yyyy + "-" + mm + "-" + dd;
-		
-		            // 폼 초기화 및 weekStart 설정
-		            $('#scheduleForm .week-form').remove(); // 기존 폼 제거
-		            var formHtml = `
-		                <div class="week-form">
-		                    <label>출근 시간: <input type="time" name="startTime"></label>
-		                    <label>퇴근 시간: <input type="time" name="endTime"></label>
-		                    <label>근무 상태: 
-		                        <select name="workStatus">
-		                            <option value="근무">근무</option>
-		                            <option value="휴무">휴무</option>
-		                        </select>
-		                    </label>
-		                </div>`;
-		            $('#scheduleForm').append(formHtml);
-		
-		            if($('#scheduleForm input[name="weekStart"]').length === 0){
-		                $('#scheduleForm').append('<input type="hidden" name="weekStart">');
-		            }
-		            $('#scheduleForm input[name="weekStart"]').val(weekStart);
-		
-		            // 저장된 데이터 불러오기
-		            let saved = localStorage.getItem('scheduleData_' + userId + '_' + weekStart);
-		            if(saved){
-		                saved = JSON.parse(saved);
-		                $('#scheduleForm .week-form').find('input, select').each(function(){
-		                    const name = $(this).attr('name');
-		                    if(saved[name] != undefined) $(this).val(saved[name]);
-		                });
-		            }
-		
-		            // 이벤트 로드
-		            loadEvents(weekStart);
-		
-		            // 배경색 적용
-		            $('.fc-daygrid-day').removeClass('select-week');
-		            $('.fc-daygrid-day').each(function(){
-		                var cellDate = $(this).attr('data-date');
-		                if(selectWeek.includes(cellDate)) $(this).addClass('select-week');
-		            });
-		
-		            $('html, body').animate({ scrollTop: $("#scheduleForm").offset().top }, 300);
+		        	handleWeekSelect(info.dateStr);
 		        }
-		    });
-		
+		    });		    
 		    calendar.render();
-		
-		    function loadEvents(weekStart){
+	
+		    function handleWeekSelect(dateStr) {
+		        // 클릭한 날짜 기준 주 시작일 계산
+		        var clicked = new Date(dateStr);
+		        var day = clicked.getDay();
+		        var diffToMonday = day === 0 ? -6 : 1 - day;
+		        var monday = new Date(clicked);
+		        monday.setDate(clicked.getDate() + diffToMonday);
+	
+		        // 이번 주 배열
+		        selectWeek = [];
+		        for(var i=0; i<7; i++){
+		            var d = new Date(monday);
+		            d.setDate(d.getDate() + i);
+		            selectWeek.push(d.toISOString().substring(0,10));
+		        }
+	
+		        // weekStart 문자열
+		        var yyyy = monday.getFullYear();
+		        var mm = ("0" + (monday.getMonth()+1)).slice(-2);
+		        var dd = ("0" + monday.getDate()).slice(-2);
+		        currentWeekStart = yyyy + "-" + mm + "-" + dd;
+		        $('#scheduleForm input[name="weekStart"]').val(currentWeekStart);
+	
+		        // 선택한 주 배경색
+		        $('.fc-daygrid-day').removeClass('select-week');
+		        $('.fc-daygrid-day').each(function(){
+		        	var cellDate = $(this).attr('data-date');
+		        	if(selectWeek.includes(cellDate)) $(this).addClass('select-week');
+		        });
+	
+		        // 선택 주 서버 체크
+		        $.ajax({
+		           url: '/sch/schedule/isSubmit',
+		           type: 'get',
+		           data: {weekStart: currentWeekStart},
+		           success: function(isSubmit) {
+		           	if (isSubmit) {
+		           		disableForm();
+		           		$('#applyBtn, #saveBtn').hide();
+		           		$('#scheduleForm').css('margin-bottom', '410px');
+		           		alert("이미 근무 신청이 완료된 주입니다.");
+		           	} else {
+		           		enableForm();
+		           		$('#applyBtn, #saveBtn').show();
+		           		loadSaveTime(currentWeekStart); // 임시 저장 불러오기
+		           	}
+		           }
+		        });
+		    }
+	
+		    function loadSaveTime(weekStart) {
+		    	const data = localStorage.getItem('scheduleData_' + userId + '_' + weekStart);
+		    	if(data) {
+		    		const obj = JSON.parse(data);
+		    		for(const key in obj) {
+		    			$('#scheduleForm [name="' + key + '"]').val(obj[key]);
+		    		}
+		    	} else {
+		    		$('#scheduleForm').find('input, select').val(function(){
+		    			return $(this).prop('tagName') == 'SELECT' ? '0' : '';
+		    		});
+		    	}
+		    }
+	
+		    function loadEvents(){
 		        $.ajax({
 		            url: '/sch/schedule/event',
 		            type: 'get',
-		            data: {weekStart: weekStart},
 		            success: function(events){
 		                calendar.removeAllEvents();
 		                events.forEach(function(e){
@@ -209,33 +222,46 @@
 		            }
 		        });
 		    }
-		
+		    loadEvents();
+	
 		    // 임시 저장
 		    $('#saveBtn').click(function(){
-		        var weekStart = $('#scheduleForm input[name="weekStart"]').val();
-		        if(!weekStart) return alert("근무 신청할주를 선택해주세요.");
-		
+		        if(!currentWeekStart) return alert("근무 신청할 주를 선택해주세요.");
+	
 		        let data = {};
-		        $('#scheduleForm .week-form').find('input, select').each(function(){
+		        $('#scheduleForm').find('input, select').not('[type="hidden"]').each(function(){
 		            const name = $(this).attr('name');
 		            if(name) data[name] = $(this).val();
 		        });
-		        localStorage.setItem('scheduleData_' + userId + '_' + weekStart, JSON.stringify(data));
+		        localStorage.setItem('scheduleData_' + userId + '_' + currentWeekStart, JSON.stringify(data));
 		        alert("저장 완료되었습니다.");
 		    });
-		
+	
 		    // 최종 신청
 		    $('#applyBtn').click(function(){
-		        var weekStart = $('#scheduleForm input[name="weekStart"]').val();
-		        if(!weekStart) return alert("근무 신청할 주를 선택해주세요.");
-		
-		        var formData = $('#scheduleForm').serialize();
+		        if(!currentWeekStart) return alert("근무 신청할 주를 선택해주세요.");
+		        
+		        var form = $('#scheduleForm');
+		        form.find('.auto-generated').remove(); // 기존 자동 생성 제거
+	
+		        for (let i = 1; i <= 7; i++) {
+		            let status = $(`[name='workStatus${i}']`).val();
+		            let start = $(`[name='startTime${i}']`).val();
+		            let end = $(`[name='endTime${i}']`).val();
+		            console.log($([name='workStatus${i}']).length);
+		            
+		            form.append(`<input class="auto-generated" type="hidden" name="workStatus${i}" value="${status}">`);
+		            form.append(`<input class="auto-generated" type="hidden" name="startTime${i}"  value="${start}">`);
+		            form.append(`<input class="auto-generated" type="hidden" name="endTime${i}"  value="${end}">`);
+		        }
+	
 		        $.ajax({
 		            url: '/sch/schedule/doApply',
 		            type: 'post',
-		            data: formData,
+		            data: form.serialize(),
 		            success: function(){
 		                alert("근무 신청이 완료되었습니다.");
+		                loadEvents(); // 캘린더 새로고침
 		            },
 		            error: function(){
 		                alert("근무 신청에 실패했습니다.");

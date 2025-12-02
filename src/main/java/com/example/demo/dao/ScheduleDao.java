@@ -30,8 +30,15 @@ public interface ScheduleDao {
 		    SELECT weekDay, workStatus, startTime, endTime, DATE_ADD(weekStart, INTERVAL weekDay-1 DAY) AS start
 			    FROM userSchedule
 			    WHERE userId = #{userId}
-			    AND weekStart = #{monday}
 		""")
-		public List<Map<String, Object>> getScheduleByUser(@Param("userId") String userId, @Param("monday") LocalDate monday);
-
+		public List<Map<String, Object>> getScheduleByUser(@Param("userId") String userId);
+	
+	//선택 주 근무신청 여부 확인
+	@Select("""
+			SELECT COUNT(*)
+				FROM userSchedule
+				WHERE userId = #{userId}
+				AND weekStart = #{weekStart}
+			""")
+	public int isSubmit(String userId, LocalDate weekStart);
 }

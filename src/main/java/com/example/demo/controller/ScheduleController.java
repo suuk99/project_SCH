@@ -49,12 +49,24 @@ public class ScheduleController {
 	@ResponseBody
 	public String doApply(HttpSession session, HttpServletRequest request) {
 	    String userId = (String) session.getAttribute("loginUserId");
-	    String weekStart = request.getParameter("weekStart");
+	    String weekStartStr = request.getParameter("weekStart");
 	    
-	    for (int i=1; i<=7; i++) {
-	        String workStatus = request.getParameter("workStatus"+i);
-	        if(workStatus == null || workStatus.equals("0")) continue;
+	    LocalDate weekStart = LocalDate.parse(weekStartStr);
+	    
+	    for (int i = 1; i <= 7; i ++) {
+	        String workStatus = request.getParameter("workStatus"+ i);
+	        String startTime = request.getParameter("startTime" + i);
+	        String endTime = request.getParameter("endTime" + i);
+	        
+	        if (workStatus == null || workStatus.isEmpty()) {
+	            return i + "요일 근무 여부를 선택해주세요.";
+	        }
 
+	        // 근무 선택 시 시간 입력 확인
+	        if ("yes".equals(workStatus) && (startTime == null || startTime.isEmpty() || endTime == null || endTime.isEmpty())) {
+	            return i + "요일 출퇴근 시간을 모두 입력해주세요.";
+	        }
+	        
 	        Schedule s = new Schedule();
 	        s.setUserId(userId);
 	        s.setWeekStart(weekStart);
@@ -78,19 +90,16 @@ public class ScheduleController {
 	
 	@GetMapping("/sch/schedule/event")
 	@ResponseBody
-	public List<Map<String, Object>> getScheduleEvent(@SessionAttribute("loginUserId") String userId,
-	                                                  @RequestParam String weekStart) {
-	    LocalDate monday = LocalDate.parse(weekStart);
-	    List<Map<String,Object>> schedules = scheduleService.getScheduleByUser(userId, monday);
+	public List<Map<String, Object>> getScheduleEvent(@SessionAttribute("loginUserId") String userId) {
+	    List<Map<String,Object>> schedules = scheduleService.getScheduleByUser(userId);
 
 	    List<Map<String,Object>> events = new ArrayList<>();
 	    DateTimeFormatter tf = DateTimeFormatter.ofPattern("HH:mm");
 
 	    for(Map<String,Object> s : schedules) {
-	        int weekDay = ((Number)s.get("weekDay")).intValue();
-	        LocalDate date = monday.plusDays(weekDay - 1);
+	    	String date = s.get("start").toString();
 
-	        String title = "휴무";
+	        String title = "";
 
 	        if("yes".equals(s.get("workStatus"))) {
 	            String start = "";
@@ -106,16 +115,24 @@ public class ScheduleController {
 	                end = ((Time)endObj).toLocalTime().format(tf);
 	            }
 
-	            title = "근무 " + start + "-" + end;
+	            title = start + "-" + end;
 	        }
-
-	        Map<String,Object> event = new HashMap<>();
-	        event.put("title", title);
-	        event.put("start", date.toString());
-	        events.add(event);
+	        if (!title.isEmpty()) {
+	        	Map<String,Object> event = new HashMap<>();
+	        	event.put("title", title);
+	        	event.put("start", date);
+	        	events.add(event);
+	        }
 	    }
-
 	    return events;
+	}
+	
+	//근무 신청 여부
+	@GetMapping("/sch/schedule/isSubmit")
+	@ResponseBody
+	public boolean isSubmit(@SessionAttribute("loginUserId") String userId, @RequestParam String weekStart) {
+		LocalDate start = LocalDate.parse(weekStart);
+		return scheduleService.isSubmit(userId, start);
 	}
 	
 	//근무 확정
