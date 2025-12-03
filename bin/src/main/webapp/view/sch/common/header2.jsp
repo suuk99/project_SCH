@@ -22,7 +22,7 @@
 		</div>
 		
 		<div class="menu">
-			<a href="/sch/user/information">인사정보</a>
+			<a href="">인사정보</a>
 			<ul>
 				<li><a href="/sch/user/information">내 정보</a></li>
 				<li><a href="/sch/user/changePw">비밀번호 변경</a></li>
@@ -30,7 +30,7 @@
 		</div>		
 			
 		<div class="menu">
-			<a href="/sch/schedule/apply">근태관리</a>
+			<a href="">근태관리</a>
 			<ul>
 				<li><a href="/sch/schedule/apply">근무 신청</a></li>
 				<li><a href="/sch/schedule/confirm">근무 확정</a></li>
@@ -40,9 +40,16 @@
 		</div>
 			
 		<div class="menu">
-			<a href="/sch/user/selectSal">급여정보</a>
+			<a href="">급여정보</a>
 			<ul>
 				<li><a href="/sch/user/selectSal">급여조회</a></li>
+			</ul>
+		</div>
+		
+		<div class="menu">
+			<a href="">관리자 기능</a>
+			<ul>
+				<li></li>
 			</ul>
 		</div>
 		

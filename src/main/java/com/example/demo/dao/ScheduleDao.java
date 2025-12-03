@@ -41,4 +41,14 @@ public interface ScheduleDao {
 				AND weekStart = #{weekStart}
 			""")
 	public int isSubmit(String userId, LocalDate weekStart);
+	
+	@Select("""
+			SELECT u.name, s.weekDay, s.workStatus, s.startTime, s.endTime
+			    FROM `user` AS u
+			    LEFT JOIN userSchedule AS s
+			    ON u.userId = s.userId
+			    WHERE s.weekStart = #{weekStart}
+			    ORDER BY u.name;
+			""")
+	public List<Map<String, Object>> getAllSchedule(LocalDate weekStart);
 }

@@ -238,32 +238,53 @@
 		    });
 	
 		    // 최종 신청
-		    $('#applyBtn').click(function(){
+		    $('#applyBtn').click(function() {
 		        if(!currentWeekStart) return alert("근무 신청할 주를 선택해주세요.");
-		        
+
 		        var form = $('#scheduleForm');
-		        form.find('.auto-generated').remove(); // 기존 자동 생성 제거
-	
+		        form.find('.auto-generated').remove(); // 기존 hidden input 제거
+
 		        for (let i = 1; i <= 7; i++) {
-		            let status = $(`[name='workStatus${i}']`).val();
-		            let start = $(`[name='startTime${i}']`).val();
-		            let end = $(`[name='endTime${i}']`).val();
-		            console.log($([name='workStatus${i}']).length);
-		            
+		            let sel = document.querySelector(`#scheduleForm select[name='workStatus${i}']`);
+		            let startInput = document.querySelector(`#scheduleForm input[name='startTime${i}']`);
+		            let endInput = document.querySelector(`#scheduleForm input[name='endTime${i}']`);
+
+		            if (!sel || !startInput || !endInput) {
+		                console.log(`i=${i} 요소 없음`);
+		                continue;
+		            }
+
+		            let status = sel.value;
+		            let start = startInput.value;
+		            let end = endInput.value;
+
+		            // 검증 먼저
+		            if (!status || status === "") {
+		                alert(`요일 ${i}의 근무여부를 선택해주세요.`);
+		                sel.focus();
+		                return;
+		            }
+		            if (!start || !end) {
+		                alert(`요일 ${i}의 출퇴근 시간을 모두 입력해주세요.`);
+		                startInput.focus();
+		                return;
+		            }
+
+		            // hidden input 추가
 		            form.append(`<input class="auto-generated" type="hidden" name="workStatus${i}" value="${status}">`);
-		            form.append(`<input class="auto-generated" type="hidden" name="startTime${i}"  value="${start}">`);
-		            form.append(`<input class="auto-generated" type="hidden" name="endTime${i}"  value="${end}">`);
+		            form.append(`<input class="auto-generated" type="hidden" name="startTime${i}" value="${start}">`);
+		            form.append(`<input class="auto-generated" type="hidden" name="endTime${i}" value="${end}">`);
 		        }
-	
+
 		        $.ajax({
 		            url: '/sch/schedule/doApply',
 		            type: 'post',
 		            data: form.serialize(),
-		            success: function(){
+		            success: function() {
 		                alert("근무 신청이 완료되었습니다.");
 		                loadEvents(); // 캘린더 새로고침
 		            },
-		            error: function(){
+		            error: function() {
 		                alert("근무 신청에 실패했습니다.");
 		            }
 		        });
