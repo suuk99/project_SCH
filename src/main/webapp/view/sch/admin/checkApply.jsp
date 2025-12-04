@@ -9,7 +9,7 @@
 
 <section>
     <div class="table" style="width:1300px; margin-top: 120px; margin-left: auto; margin-right: auto;">
-        <div class="pageName" style="font-size:28px; font-weight:bold; margin-bottom:25px;">근무신청 현황</div>
+        <div class="pageName" style="font-size:28px; font-weight:bold; margin-bottom:25px; margin-right: 50%;">근무신청 현황</div>
 
         <div style="margin-left:61.5%; display:flex; margin-bottom:25px;">
             <div style="padding: 2px 6px; margin-right: 5px; border-radius: 3px;font-size:15px; background-color: #f7f7f7;">주 선택</div>
@@ -40,19 +40,19 @@
 
                 <div style="display:flex; justify-content:space-between; margin:13px 19%; font-size:17px;">
                     <div style="width:100px;">${userName}</div>
-                    <div style="width:130px;">${days[0]}</div>
-                    <div style="width:130px;">${days[1]}</div>
-                    <div style="width:130px;">${days[2]}</div>
-                    <div style="width:130px;">${days[3]}</div>
-                    <div style="width:130px;">${days[4]}</div>
-                    <div style="width:130px;">${days[5]}</div>
-                    <div style="width:130px;">${days[6]}</div>
+                    <div style="width:130px;"><c:choose><c:when test="${days[0] == null}">-</c:when><c:otherwise>${days[0]}</c:otherwise></c:choose></div>
+		            <div style="width:130px;"><c:choose><c:when test="${days[1] == null}">-</c:when><c:otherwise>${days[1]}</c:otherwise></c:choose></div>
+		            <div style="width:130px;"><c:choose><c:when test="${days[2] == null}">-</c:when><c:otherwise>${days[2]}</c:otherwise></c:choose></div>
+		            <div style="width:130px;"><c:choose><c:when test="${days[3] == null}">-</c:when><c:otherwise>${days[3]}</c:otherwise></c:choose></div>
+		            <div style="width:130px;"><c:choose><c:when test="${days[4] == null}">-</c:when><c:otherwise>${days[4]}</c:otherwise></c:choose></div>
+		            <div style="width:130px;"><c:choose><c:when test="${days[5] == null}">-</c:when><c:otherwise>${days[5]}</c:otherwise></c:choose></div>
+		            <div style="width:130px;"><c:choose><c:when test="${days[6] == null}">-</c:when><c:otherwise>${days[6]}</c:otherwise></c:choose></div>
                 </div>
             </c:forEach>
         </div>
 
         <div style="position: fixed; bottom: 220px; left: 50%; transform: translateX(-50%); width: 170px;">
-            <button class="btn btn-neutral" onclick="location.href='/sch/home/main'" style="width:170px;">근무표 작성</button>
+            <button class="btn btn-neutral" onclick="location.href='/sch/admin/createSchedule'" style="width:170px;">AI 근무표 생성</button>
         </div>
     </div>
 </section>

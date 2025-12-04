@@ -52,7 +52,7 @@
 				 <ul>
 				 	<li><a href="/sch/notice/write">공지사항 작성</a></li>
 				 	<li><a href="/sch/admin/checkApply">근무신청 현황</a></li>
-				 	<li><a href="">스케줄 등록</a></li>
+				 	<li><a href="/sch/admin/createSchedule">스케줄 작성</a></li>
 				 </ul>
 			</div>
 		</c:if>

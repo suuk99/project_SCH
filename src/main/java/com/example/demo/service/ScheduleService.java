@@ -34,4 +34,16 @@ public class ScheduleService {
 		return this.scheduleDao.getAllSchedule(weekStart);
 	}
 
+	public List<Map<String, Object>> getApplyList(LocalDate weekStart) {
+		return this.scheduleDao.getApplyList(weekStart);
+	}
+
+	public List<String> getAllUser() {
+		return this.scheduleDao.getAllUser();
+	}
+
+	public void saveFixSchedule(String userId, LocalDate weekStart, int weekDay, String startTime, String endTime) {
+		this.scheduleDao.saveFixSchedule(userId, weekStart, weekDay, startTime, endTime);
+	}
+
 }

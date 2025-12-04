@@ -47,8 +47,33 @@ public interface ScheduleDao {
 			    FROM `user` AS u
 			    LEFT JOIN userSchedule AS s
 			    ON u.userId = s.userId
-			    WHERE s.weekStart = #{weekStart}
+			    AND s.weekStart = #{weekStart}
+			    WHERE role != 'ADMIN'
 			    ORDER BY u.name;
 			""")
 	public List<Map<String, Object>> getAllSchedule(LocalDate weekStart);
+
+	@Select("""
+			SELECT u.name, s.weekDay, s.workStatus, s.startTime, s.endTime
+			    FROM `user` AS u
+			    INNER JOIN userSchedule AS s
+			    ON u.userId = s.userId
+			    AND s.weekStart = #{weekStart}
+			    WHERE role != 'ADMIN'
+			    ORDER BY u.name;
+			""")
+	public List<Map<String, Object>> getApplyList(LocalDate weekStart);
+
+	@Select("""
+			SELECT userId
+				FROM `user`
+				WHERE role != 'ADMIN'
+			""")
+	public List<String> getAllUser();
+
+	@Insert("""
+			INSERT INTO fixSchedule (userId, weekStart, weekDay, startTime, endTime)
+				VALUES (#{userId}, #{weekStart}, #{weekDay}, #{startTime}, #{endTime})
+			""")
+	public void saveFixSchedule(String userId, LocalDate weekStart, int weekDay, String startTime, String endTime);
 }

@@ -43,6 +43,8 @@ public class WebConfig implements WebMvcConfigurer {
 		
 		registry.addInterceptor(userRoleInterceptor).addPathPatterns("/sch/notice/write")
 				.addPathPatterns("/sch/notice/doWrite").addPathPatterns("/sch/notice/modify")
-				.addPathPatterns("/sch/notice/doModify").addPathPatterns("/sch/notice/delete");
+				.addPathPatterns("/sch/notice/doModify").addPathPatterns("/sch/notice/delete")
+				.addPathPatterns("/sch/admin/checkApply").addPathPatterns("/sch/admin/createSchedule");
+				
 	}
 }

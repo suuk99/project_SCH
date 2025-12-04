@@ -14,15 +14,15 @@
 			<form id="scheduleForm">
 				<input type="hidden" name="weekStart" value="">
 				<div class="table-box">
-					<div style="font-size: 25px; font-weight: bold; padding: 15px; margin-bottom: 15px;">근무 신청</div>
+					<div style="font-size: 25px; font-weight: bold; padding: 15px; margin-bottom: 25px;">근무 신청</div>
 					<div id="calendar" style="max-width: 520px; height: 500px; margin-right: auto; margin-left: auto; margin-bottom: 50px;"></div>
 					<tr>
 						<td>월요일</td>
 						<td>
 							<select class="select" name="workStatus1" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime1" style="width:130px; height: 30px; margin: 0 10px;"/></td>
@@ -34,9 +34,9 @@
 						<td>화요일</td>
 						<td>
 							<select class="select" name="workStatus2" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime2" style="width:130px; height: 30px; margin: 0 10px;"/></td>
@@ -47,9 +47,9 @@
 						<td>수요일</td>
 						<td>
 							<select class="select" name="workStatus3" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime3" style="width:130px; height: 30px; margin: 0 10px;"/></td>
@@ -60,9 +60,9 @@
 						<td>목요일</td>
 						<td>
 							<select class="select" name="workStatus4" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime4" style="width:130px; height: 30px; margin: 0 10px;"/></td>
@@ -73,9 +73,9 @@
 						<td>금요일</td>
 						<td>
 							<select class="select" name="workStatus5" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime5" style="width:130px; height: 30px; margin: 0 10px;"/></td>
@@ -86,9 +86,9 @@
 						<td>토요일</td>
 						<td>
 							<select class="select" name="workStatus6" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime6" style="width:130px; height: 30px; margin: 0 10px;"/></td>
@@ -99,9 +99,9 @@
 						<td>일요일</td>
 						<td>
 							<select class="select" name="workStatus7" style="width:90px; height: 30px; margin: 0 22px;">
-								<option class="select" disabled selected value="">--</option>
-								<option class="select" value="yes">근무</option>
-								<option class="select" value="no">휴무</option>
+								<option disabled selected value="">--</option>
+								<option value="yes">근무</option>
+								<option value="no">휴무</option>
 							</select>
 						</td>
 						<td>출근<input class="input" type="time" name="startTime7" style="width:130px; height: 30px; margin: 0 10px;"/></td>
