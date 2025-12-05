@@ -72,8 +72,9 @@ public interface ScheduleDao {
 	public List<String> getAllUser();
 
 	@Insert("""
-			INSERT INTO fixSchedule (userId, weekStart, weekDay, startTime, endTime)
-				VALUES (#{userId}, #{weekStart}, #{weekDay}, #{startTime}, #{endTime})
-			""")
-	public void saveFixSchedule(String userId, LocalDate weekStart, int weekDay, String startTime, String endTime);
+		    INSERT INTO fixSchedule (userName, weekStart, weekDay, workStatus, startTime, endTime)
+		    VALUES (#{userName}, #{weekStart}, #{weekDay}, #{workStatus}, #{startTime}, #{endTime})
+		""")
+		void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus,
+		                     String startTime, String endTime);
 }

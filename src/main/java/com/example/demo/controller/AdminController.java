@@ -12,10 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.service.ScheduleService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -74,6 +77,7 @@ public class AdminController {
         return "sch/admin/checkApply";
     }
     
+    //스케줄 작성 등록
     @GetMapping("/sch/admin/createSchedule")
     public String createSchedule(@RequestParam(required = false) String week, Model model) {
     	
@@ -130,24 +134,28 @@ public class AdminController {
     
     @PostMapping("/sch/admin/saveSchedule")
     @ResponseBody
-    public String saveSchedule(HttpServletRequest request) {
-    	String weekStartStr = request.getParameter("weekStart");
-    	LocalDate weekStart = LocalDate.parse(weekStartStr);
-    	
-    	List<String> userList = scheduleService.getAllUser();
-    	
-    	for (String userId : userList) {
-    		for (int i = 1; i <= 7; i ++) {
-    			String start = request.getParameter("start_" + userId + "_" + i);
-    			String end = request.getParameter("end_" + userId + "_" + i);
-    			
-    			if (start != null && !start.isBlank() && !end.isBlank()) {
-    				scheduleService.saveFixSchedule(userId, weekStart, i, start, end);
-    			}
-    		}
-    	}
-    	return "ok";
+    public String saveSchedule(@RequestBody Map<String, Object> payload) {
+        String weekStart = (String) payload.get("weekStart");
+        Map<String, Object> schedule = (Map<String, Object>) payload.get("schedule");
+
+        System.out.println("받은 weekStart: " + weekStart);
+        System.out.println("받은 schedule: " + schedule);
+
+        // schedule 전체 순회 → 서비스 호출
+        for (String user : schedule.keySet()) {
+            Map<String, Object> data = (Map<String, Object>) schedule.get(user);
+            List<String> days = (List<String>) data.get("days");
+            List<String> startTimes = (List<String>) data.get("startTimes");
+            List<String> endTimes = (List<String>) data.get("endTimes");
+
+            for (int i = 0; i < 7; i++) {
+            	scheduleService.saveFixSchedule(user, weekStart, i + 1, days.get(i), startTimes.get(i), endTimes.get(i));
+            }
+        }
+
+        return "SUCCESS";
     }
+
 
     // 시간표 업로드
     @GetMapping("/sch/admin/uploadTimeTable")

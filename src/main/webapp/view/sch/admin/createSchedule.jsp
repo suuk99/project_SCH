@@ -5,6 +5,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <c:set var="pageTitle" value="스케줄 작성" />
+<c:set var="jsWeekKey" value="${selectWeek}" />
 <%@ include file="/view/sch/common/header2.jsp"%>
 
 	<section>
@@ -13,13 +14,14 @@
 	
 	        <div style="margin-left:61.5%; display:flex; margin-bottom:25px;">
 	            <div style="padding: 2px 6px; margin-right: 5px; border-radius: 3px;font-size:15px; background-color: #f7f7f7;">주 선택</div>
-	            <select name="week" onchange="location.href='?week=' + this.value;">
-	                <c:forEach var="week" items="${weekList}">
-	                    <option value="${week.start}" <c:if test="${selectWeek == week.start}">selected</c:if>>
-	                        ${week.display}
-	                    </option>
-	                </c:forEach>
-	            </select>
+	            <%-- ⭐ (1) ID 추가 및 value="${week.start}"가 비어있지 않은지 서버측에서 확인 완료된 것으로 가정 --%>
+	            <select name="week" id="weekSelector" onchange="location.href='?week=' + this.value;">
+				    <c:forEach var="week" items="${weekList}">
+				        <option value="${week.start}" <c:if test="${selectWeek == week.start}">selected</c:if>>
+				            ${week.display}
+				        </option>
+				    </c:forEach>
+				</select>
 	        </div>
 	
 	        <div class="top-name" style="display:flex; justify-content:space-between; font-size:17px; font-weight:600; margin:9px 19%; border-bottom:1px solid #dedede;">
@@ -49,24 +51,25 @@
 			            <div style="width:130px;"><c:choose><c:when test="${days[6] == null}">-</c:when><c:otherwise>${days[6]}</c:otherwise></c:choose></div>
 	                </div>
 					
-					<div class="work" style="margin-bottom: 40px;">
-		                <div style="margin-left: 67px;"> 
+					<div class="work" data-user="${userName}" style="margin-bottom: 40px;">
+		                <div style="margin-left: 67px;">	
 		                	<span style="font-weight: bold">근무</span>
 		                	<c:forEach begin="1" end="7" var="i">
-		                		<select class="select" name="" id="" style="width: 105px; height: 26px; margin: 3px 5px;">
-		                			<option value="0" selected>근무 여부</option>
+		                		<%-- ⭐ (2) off 옵션에서 selected 속성 제거 --%>
+		                		<select class="select" name="work_${userName}_${i}" id="" style="width: 105px; height: 26px; margin: 3px 5px;">
+		                			<option value="off">근무 여부</option>
 		                			<option value="yes">근무</option>
 		                			<option value="no">휴무</option>
 		                		</select>
 		                	</c:forEach>
 		                </div>
-		                <div class="sub-row" id="sub-${userName}" style="margin-left: 67px;"> 
+		                <div class="sub-row" id="sub-${userName}" style="margin-left: 67px;">	
 		                	<span style="font-weight: bold">출근</span>
 					        <c:forEach begin="1" end="7" var="i">
 					        	<input class="input" type="time" name="start_${userName}_${i}" style="width: 105px; height: 26px; margin: 3px 5px;">
 					        </c:forEach>
 		                </div>
-		                <div style="margin-left: 67px;"> 
+		                <div style="margin-left: 67px;">	
 		                	<span style="font-weight: bold">퇴근</span>
 		                	<c:forEach begin="1" end="7" var="i">
 					        	<input class="input" type="time" name="end_${userName}_${i}" style="width: 105px; height: 26px; margin: 3px 5px;">
@@ -88,123 +91,226 @@
 	</section>
 
 	<script>
-		$(document).ready(function() {
-		    // 처음에는 .work 숨기기
-		    $(".work").hide();
+		// ⭐⭐⭐ (3) 서버 변수를 JavaScript 변수에 직접 할당하여 키 값 오류를 원천 차단 ⭐⭐⭐
+		const CURRENT_WEEK_KEY = '${selectWeek}'; 
 		
-		    // 사용자 이름 클릭 시 해당 .work 토글
-		    $(".user-row > div:first-child").click(function() {
-		        // 클릭한 사용자 이름 가져오기
-		        const userName = $(this).text().trim();
-		        // 해당 사용자의 work 영역 토글
+		// 1. 전역 데이터 캐시 객체 선언 (DOM과 독립된 데이터 모델)
+		let scheduleCache = {}; 
+		
+		// 2. 키를 가져오는 함수 (변수에서 가져오므로 가장 안정적임)
+		function getCurrentWeekKey() {
+			if (!CURRENT_WEEK_KEY) {
+				console.error("Critical Error: 서버 변수 ${selectWeek} 값이 비어있습니다. 로컬 저장소를 사용할 수 없습니다.");
+				return "";
+			}
+			return CURRENT_WEEK_KEY;
+		}
+
+		/* -------------------------------
+		   헬퍼: 캐시 객체 초기화/생성
+		------------------------------- */
+		function initializeScheduleCache(users) {
+			const cache = {};
+			users.forEach(userName => {
+				cache[userName] = {
+					days: Array(7).fill('off'),
+					startTimes: Array(7).fill(''),
+					endTimes: Array(7).fill('')
+				};
+			});
+			return cache;
+		}
+
+		$(document).ready(function() {
+			// 1. 초기 사용자 목록을 기반으로 캐시 초기화
+			const userRows = $(".user-row");
+			const userList = userRows.map(function() { return $(this).data("user"); }).get();
+			scheduleCache = initializeScheduleCache(userList);
+		
+		    /* -------------------------------
+		       1) 사용자 클릭 → 근무 입력 토글
+		    ------------------------------- */
+		    $(".work").hide();
+		    $(".user-row > div:first-child").click(function () {
+		        const userName = $(this).closest(".user-row").data("user");
 		        $("#sub-" + userName).closest(".work").slideToggle(200);
 		    });
-		    
-		  //페이지 로드 시 로컬스토리지에서 불러옴
-			const week = $('select[name="week"]').val();
-			const saveData = localStorage.getItem('schedule_' + week);
-				
-			if(saveData) {
-			    const data = JSON.parse(saveData);
-			    for(const user in data) {
-			        const workDiv = $('#sub-' + user).closest('.work');
-			        workDiv.find(".select").each((i, el) => {
-			            const val = data[user].days[i];
-			            $(el).val(val);
-
-			            // 근무 여부에 따른 input 활성화/비활성화
-			            const isWorking = val === 'yes';
-			            const startInput = workDiv.find('.sub-row input').eq(i);
-			            const endInput = workDiv.find('div:has(span:contains("퇴근")) input').eq(i);
-
-			            startInput.prop('disabled', !isWorking);
-			            endInput.prop('disabled', !isWorking);
-
-			            if(!isWorking){
-			                startInput.val('');
-			                endInput.val('');
-			            }
-			        });
-
-			        workDiv.find(".sub-row input").each((i, el) => $(el).val(data[user].startTimes[i]));
-			        workDiv.find("div:has(span:contains('퇴근')) input").each((i, el) => $(el).val(data[user].endTimes[i]));
-			    }
-			}
-		});
 		
-		function collectScheduleData() {
-			let scheduleData = {};
-			
-			$('.user-row').each(function() {
-				const userName = $(this).data('user');
-				let days = [];
-				
-				$(this).next('.work').find('.select').each(function() {
-					days.push($(this).val());
-				});
-				
-				let startTimes = [];
-				let endTimes = [];
-				
-				$(this).next('.work').find('.sub-row input').each(function() {
-					startTimes.push($(this).val());
-				});
-				$(this).next('.work').find('div:has(span:contains("퇴근")) input').each(function() {
-					endTimes.push($(this).val());
-				});		
-				
-				scheduleData[userName] = {days, startTimes, endTimes};
-			});
-			
-			return scheduleData;
-		}
+		    /* -------------------------------
+		       2) 근무 여부 변경 → 캐시 업데이트 및 출퇴근 활성/비활성 (핵심)
+		    ------------------------------- */
+		    $(document).on("change", ".work .select", function () {
+		        const workSelect = $(this);
+		        const userName = workSelect.closest(".work").data("user");
+		        const workDiv = workSelect.closest(".work");
+		        const idx = workDiv.find(".select").index(workSelect);
+		        
+		        const newValue = workSelect.val(); // 사용자가 선택한 정확한 값
+		        const isWorking = newValue === "yes";
+		        
+		        // ⭐ 캐시 업데이트: DOM과 독립적으로 사용자의 선택을 저장
+		        if (scheduleCache[userName]) {
+		        	scheduleCache[userName].days[idx] = newValue;
+		        }
+
+		        // DOM 상태 업데이트 (비활성화)
+		        const startInput = workDiv.find(".sub-row input").eq(idx);
+		        const endInput = workDiv.find("div:has(span:contains('퇴근')) input").eq(idx);
 		
-		//근무여부에 따른 시간 입력 활성화
-		$('.work .select').change(function() {
-			const workSelect = $(this);
-			const isWorking = workSelect.val() == 'yes';
-			const workDiv = workSelect.closest('.work');
-			const index = workDiv.find('.select').index(workSelect);
-			const startInput = workDiv.find('.sub-row input').eq(index);
-			const endInput = workDiv.find('div:has(span:contains("퇴근")) input').eq(index);
-			
-			//근무면 활성화, 휴무이면 비활성화 + 값 초기화
-			startInput.prop('disabled', !isWorking);
-			endInput.prop('disabled', !isWorking);
-			
-			if(!isWorking) {
-				startInput.val('');
-				endInput.val('');
-			}
-		});
+		        startInput.prop("disabled", !isWorking);
+		        endInput.prop("disabled", !isWorking);
 		
-		//저장버튼 클릭 시
-		$('#saveBtn').click(function() {
-			const week = $('select[name="week"]').val(); //선택한 주
-			const data = collectScheduleData();
-			localStorage.setItem('schedule_' + week, JSON.stringify(data));
-			alert('저장이 완료되었습니다.');
-		});
-		
-		//등록버튼
-		$('#regisBtn').click(function(e) {
-			e.preventDefault(); //새로고침 방지
-			const week = $('select[name="week"]').val();
-			const data = collectScheduleData();
-			
-			let formData = {weekStart: week};
-			
-			for(const user in data) {
-				for(let i = 0; i < 7; i++) {
-					formData[`start_${user}_${i+1}`] = data[user].startTimes[i];
-					formData[`end_${user}_${i+1}`] = data[user].endTimes[i];
-				}
-			}
-			console.log(formData);
-			$.post('/sch/admin/saveSchedule', formData, function(result){
-			       alert('스케줄 등록이 완료되었습니다.');
+		        // 캐시 및 DOM 값 정리
+		        if (!isWorking) {
+		            startInput.val("");
+		            endInput.val("");
+		            if (scheduleCache[userName]) {
+		            	scheduleCache[userName].startTimes[idx] = '';
+		            	scheduleCache[userName].endTimes[idx] = '';
+		            }
+		        }
 		    });
+		    
+		    /* -------------------------------
+		       2-1) 시간 변경 → 캐시 업데이트 
+		    ------------------------------- */
+		    $(document).on("change", ".work input[type='time']", function () {
+		    	const input = $(this);
+		    	const userName = input.closest(".work").data("user");
+		    	const workDiv = input.closest(".work");
+		    	
+		    	// 같은 이름의 input이 start/end 두 줄에 있으므로, index 7을 기준으로 나눕니다.
+		    	const inputElements = workDiv.find("input[type='time']");
+		    	const idx = inputElements.index(input) % 7; 
+		    	
+		    	if (!scheduleCache[userName]) return;
+		    	
+		    	// input이 start row에 있는지, end row에 있는지 확인하여 캐시 업데이트
+		    	const inputIndex = inputElements.index(input);
+		    	
+		    	if (inputIndex < 7) { // 0~6 인덱스는 출근(start) 라인
+		    		scheduleCache[userName].startTimes[idx] = input.val();
+		    	} else { // 7~13 인덱스는 퇴근(end) 라인
+		    		scheduleCache[userName].endTimes[idx] = input.val();
+		    	}
+		    });
+		
+		    /* -------------------------------
+		       3) 로컬스토리지 불러오기
+		    ------------------------------- */
+		    function loadSchedule() {
+		        const weekKey = getCurrentWeekKey();
+		        
+		        // 키 값이 없으면 로드 시도 안함
+		        if (!weekKey) return;
+		        
+		        const savedData = localStorage.getItem("schedule_" + weekKey);
+		
+		        // 1. 초기화: 모든 필드를 기본 상태로 설정 (DOM 초기화)
+		        $(".work").each(function() {
+		            $(this).find(".select").val("off"); 
+		            $(this).find(".sub-row input").prop("disabled", true).val("");
+		            $(this).find("div:has(span:contains('퇴근')) input").prop("disabled", true).val("");
+		        });
+		        
+		        if (!savedData) return;
+
+		        const data = JSON.parse(savedData);
+		        scheduleCache = data; // ⭐ 로컬스토리지 데이터를 캐시에 직접 저장
+		        
+		        // 2. 캐시 데이터를 바탕으로 DOM 업데이트
+		        for (const user in data) {
+		            const workDiv = $(`.work[data-user="${user}"]`);
+		            if (workDiv.length === 0) continue;
+		
+		            workDiv.find("select.select").each(function(i) {
+		                const val = data[user].days[i];
+		                $(this).val(val); 
+		
+		                const startInput = workDiv.find(".sub-row input").eq(i);
+		                const endInput = workDiv.find("div:has(span:contains('퇴근')) input").eq(i);
+		
+		                const isWorking = (val === "yes");
+		                
+		                startInput.prop("disabled", !isWorking).val(data[user].startTimes[i] || "");
+		                endInput.prop("disabled", !isWorking).val(data[user].endTimes[i] || "");
+		            });
+		        }
+		    }
+		
+		    // ⭐ DOM 준비 완료 후 즉시 로드 (타이밍 문제 해결)
+		    loadSchedule();
+		
+		    /* -------------------------------
+		       4) 전체 근무정보 수집 (캐시에서 데이터 읽기)
+		    ------------------------------- */
+		    function collectScheduleData() {
+		        // 최종 전송 데이터는 DOM이 아닌, 캐시에서 가져옵니다.
+		        console.log("최종 수집 데이터 (scheduleCache 객체):", scheduleCache); 
+		        return scheduleCache;
+		    }
+		
+		    /* -------------------------------
+		       5) 로컬 저장 버튼
+		    ------------------------------- */
+		    $("#saveBtn").click(function () {
+		        const week = getCurrentWeekKey();
+		        const data = collectScheduleData();
+		        
+		        if (!week) return alert("주차 키를 찾을 수 없어 저장할 수 없습니다.");
+		        
+		        localStorage.setItem("schedule_" + week, JSON.stringify(data));
+		        
+		        const checkData = localStorage.getItem("schedule_" + week);
+		        console.log(`[LocalStorage SAVE] Key: schedule_${week}`);
+		        console.log(`[LocalStorage SAVE] 데이터 저장 성공 여부: ${checkData ? '성공 (데이터 발견)' : '실패 (데이터 없음)'}`);
+		        
+		        alert("저장이 완료되었습니다.");
+		    });
+		
+		    /* -------------------------------
+		       6) 서버 등록 버튼
+		    ------------------------------- */
+		    $("#regisBtn").off("click").on("click", function(e) {
+		        e.preventDefault();
+		        const weekStart = getCurrentWeekKey();
+		        
+		        if (!weekStart) return alert("주차 키를 찾을 수 없어 등록할 수 없습니다.");
+		        
+		        const scheduleData = collectScheduleData();
+		
+                const finalPayload = {
+                    weekStart: weekStart,
+                    schedule: scheduleData
+                };
+
+                console.log("--- 서버 전송 FINAL PAYLOAD (JSON) ---");
+                console.log(JSON.stringify(finalPayload));
+                console.log("------------------------------------------");
+		
+		        $.ajax({
+		            url: "/sch/admin/saveSchedule",
+		            method: "POST",
+		            contentType: "application/json", 
+		            data: JSON.stringify(finalPayload), 
+		            success: function(res) {
+		                alert("스케줄 등록이 완료되었습니다.");
+		                // 성공 시 로컬 저장도 캐시로 진행
+		                localStorage.setItem("schedule_" + weekStart, JSON.stringify(scheduleData));
+		                
+		                const checkData = localStorage.getItem("schedule_" + weekStart);
+		                console.log(`[LocalStorage REGIST] Key: schedule_${weekStart}`);
+		                console.log(`[LocalStorage REGIST] 데이터 저장 성공 여부: ${checkData ? '성공 (데이터 발견)' : '실패 (데이터 없음)'}`);
+		            },
+		            error: function(xhr) {
+		                console.error("등록 실패", xhr);
+		                alert("등록 중 오류 발생 (console 확인)");
+		            }
+		        });
+		    });
+		
 		});
 	</script>
+
 
 <%@ include file="/view/sch/common/footer.jsp"%>
