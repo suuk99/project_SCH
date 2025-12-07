@@ -13,6 +13,9 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/resource/css/Common.css" />
     <link rel="shortcut icon" href="/resource/images/favicon.ico" />
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
    <!--  <script src="${pageContext.request.contextPath}/resource/js/common.js"></script> -->
 </head>
 <body>
@@ -61,3 +64,37 @@
 		
 		<a class="logout" href="/sch/user/logout" style="font-weight: bold;"> <i class="fa-solid fa-lock" style="color: #dba309"></i> 로그아웃</a>
 	</section>
+	
+	<script>
+	function showAlert(text) {
+	    // 중요한 점: $('#alert-area') 요소가 모든 JSP 파일의 <body> 안에 있어야 합니다.
+	    const $alertArea = $('#alert-area'); 
+	    
+	    // 알림 메시지 div 생성 (기존에 작성하신 로직 그대로 사용)
+	    const $alertBox = $(`
+	        <div class='alert-box' style="
+	            background: #ffe9a4; 
+	            border: 1px solid #ffcc00; 
+	            padding: 10px; 
+	            margin-bottom: 6px; 
+	            border-radius: 6px;
+	            opacity: 0; 
+	            transition: opacity 0.5s ease-in-out; 
+	        ">${text}</div>`);
+	        
+	    // DOM에 추가
+	    $alertArea.prepend($alertBox); 
+
+	    // 화면 표시 및 타이머 설정 로직
+	    setTimeout(() => {
+	        $alertBox.css('opacity', 1);
+	    }, 50); 
+
+	    setTimeout(() => {
+	        $alertBox.css('opacity', 0); 
+	        setTimeout(() => {
+	            $alertBox.remove();
+	        }, 500); 
+	    }, 5000); 
+	}
+	</script>

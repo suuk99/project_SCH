@@ -24,11 +24,13 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 public class AdminController {
-
+	
+	private final ScheduleNotificationController notifier;
     private final ScheduleService scheduleService;
 
-    public AdminController(ScheduleService scheduleService) {
+    public AdminController(ScheduleService scheduleService, ScheduleNotificationController notifier) {
         this.scheduleService = scheduleService;
+        this.notifier = notifier;
     }
 
     @GetMapping("/sch/admin/checkApply")
@@ -138,8 +140,6 @@ public class AdminController {
         String weekStart = (String) payload.get("weekStart");
         Map<String, Object> schedule = (Map<String, Object>) payload.get("schedule");
 
-        System.out.println("받은 weekStart: " + weekStart);
-        System.out.println("받은 schedule: " + schedule);
 
         // schedule 전체 순회 → 서비스 호출
         for (String user : schedule.keySet()) {
@@ -152,7 +152,8 @@ public class AdminController {
             	scheduleService.saveFixSchedule(user, weekStart, i + 1, days.get(i), startTimes.get(i), endTimes.get(i));
             }
         }
-
+        
+        notifier.sendAlertToAll("새로운 스케줄이 등록되었습니다. 확인 후 확정해주세요.");
         return "SUCCESS";
     }
 

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -72,9 +73,13 @@ public interface ScheduleDao {
 	public List<String> getAllUser();
 
 	@Insert("""
-		    INSERT INTO fixSchedule (userName, weekStart, weekDay, workStatus, startTime, endTime)
-		    VALUES (#{userName}, #{weekStart}, #{weekDay}, #{workStatus}, #{startTime}, #{endTime})
+		    INSERT INTO fixSchedule 
+		        (userName, weekStart, weekDay, workStatus, startTime, endTime)
+		    VALUES
+		        (#{userName}, #{weekStart}, #{weekDay}, #{workStatus},
+		         NULLIF(#{startTime}, ''), NULLIF(#{endTime}, ''))
 		""")
-		void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus,
+	void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus,
 		                     String startTime, String endTime);
+
 }

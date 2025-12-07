@@ -9,7 +9,8 @@
 
 <section style="margin-top: 150px; margin-left: auto; margin-right: auto; width: 70%; background-color: red;">
 	<div>
-	 dfsfsfs
+		<img src="/resource/images/img/111.png">
+	 	<img src="/resource/images/img/111.png">
 	</div>
 	
 	<div style="display: flex;">

@@ -46,12 +46,16 @@
 			</ul>
 		</div>
 		
-		<div class="menu">
-			<a href="">관리자 기능</a>
-			<ul>
-				<li></li>
-			</ul>
-		</div>
+		<c:if test="${sessionScope.loginUserRole == 'ADMIN'}">
+			<div class="menu">
+				<a href="">관리자 메뉴</a>
+				 <ul>
+				 	<li><a href="/sch/notice/write">공지사항 작성</a></li>
+				 	<li><a href="/sch/admin/checkApply">근무신청 현황</a></li>
+				 	<li><a href="/sch/admin/createSchedule">스케줄 작성</a></li>
+				 </ul>
+			</div>
+		</c:if>
 		
 		<div class="ment"><a href="/sch/user/information">반갑습니다!  ${sessionScope.loginUserName}  님</a></div>
 		

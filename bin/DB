@@ -11,9 +11,12 @@ CREATE TABLE `user` (
   award VARCHAR(30),
   regDate DATETIME NOT NULL DEFAULT NOW(),
   birthDate VARCHAR(8) NOT NULL,
-  phoneNum VARCHAR(11) NOT NULL
-   
+  phoneNum VARCHAR(11) NOT NULL   
 );
+
+SELECT userId, ROLE FROM USER WHERE userId = 'sss';
+SELECT * FROM `user`;
+
 
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -25,8 +28,18 @@ CREATE TABLE userSchedule(
   workStatus ENUM('yes', 'no') DEFAULT 'no',
   confirm BOOLEAN DEFAULT 0
 );
-        
+
+DROP TABLE userSchedule;      
 SELECT * FROM userSchedule;
+
+CREATE TABLE fixSchedule (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    userId VARCHAR(20) NOT NULL,
+    weekStart DATE NOT NULL,
+    `weekDay` INT NOT NULL,
+    startTime TIME,
+    endTime TIME
+);
 
 CREATE TABLE timeTable (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -35,12 +48,33 @@ CREATE TABLE timeTable (
   `status` VARCHAR(30) NOT NULL DEFAULT 'UPLOAD'
 );
 
+DROP TABLE notice;
 CREATE TABLE notice (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     content TEXT NOT NULL,
-    writerId VARCHAR(30) NOT NULL,
+    writerId INT UNSIGNED NOT NULL,
     regDate DATETIME NOT NULL DEFAULT NOW(),
     updateDate DATETIME,
     hit INT NOT NULL DEFAULT 0
 );
+
+INSERT INTO notice (regDate, writerId, title, content)
+SELECT NOW(), 1, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
+   
+CREATE TABLE salary (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    `month` VARCHAR(10) NOT NULL,
+    hourly_rate INT UNSIGNED NOT NULL, 
+    total_hours DECIMAL(5,2) NOT NULL,
+    gross_pay INT UNSIGNED NOT NULL,
+    deductions INT UNSIGNED NOT NULL,
+    net_pay INT UNSIGNED NOT NULL
+);
+
+SELECT u.name, s.weekDay, s.workStatus, s.startTime, s.endTime
+    FROM `user` AS u
+    INNER JOIN userSchedule AS s
+    ON u.userId = s.userId
+    ORDER BY u.name;

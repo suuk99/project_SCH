@@ -7,9 +7,15 @@
 
 <%@ include file="/view/sch/common/header2.jsp"%>
 
+<section style="margin-top: 150px; margin-left: auto; margin-right: auto; width: 70%; background-color: red;">
+	<div>
+	 dfsfsfs
+	</div>
+	
+	<div style="display: flex;">
+		<div><a href="/sch/notice/write">글쓰기</a></div>
+		<div><a href="/sch/notice/list">공지사항 </a></div>
+	</div>
+</section>
 
-<div><a href="/sch/notice/write">공지사항</a></div>
-<div>	
-Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eveniet culpa quaerat saepe ea quisquam numquam temporibus quam qui consequatur a. Quod velit neque iste commodi rem ab dolores impedit quibusdam.
-</div>
 <%@ include file="/view/sch/common/footer.jsp"%>
