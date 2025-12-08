@@ -333,7 +333,7 @@
 		   
 		   if (lockedWeeksList.includes(currentKey)) {
 			   $(".select, input[type='time'], #saveBtn, #regisBtn").prop("disabled", true);
-		       alert("이미 이 주차는 스케줄 등록이 완료되었습니다.");
+		       alert("이미 스케줄 등록이 완료된 주입니다.");
 		   }
 		});
 	</script>

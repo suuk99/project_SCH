@@ -155,7 +155,7 @@ public class AdminController {
             	scheduleService.saveFixSchedule(user, weekStart, i + 1, days.get(i), startTimes.get(i), endTimes.get(i));
             }
         }
-        notifier.sendAlertToAll("새로운 스케줄이 등록되었습니다. 확인해 주세요.");
+        notifier.sendAlertToAll("새로운 스케줄이 등록되었습니다. 지금 확인해 주세요!");
         return "SUCCESS";
     }
 

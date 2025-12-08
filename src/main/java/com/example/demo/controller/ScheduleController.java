@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -136,16 +137,19 @@ public class ScheduleController {
 		return scheduleService.isSubmit(userId, start);
 	}
 	
-	//근무 확정
-	@GetMapping("/sch/schedule/confirm")
-	public String scheduleConfirm() {
-		return "sch/schedule/confirm";
-	}
-	
 	//근무시간 조회
 	@GetMapping("/sch/schedule/list")
 	public String scheduleList() {
 		return "sch/schedule/list";
+	}
+	
+	//근무확정 클릭
+	@PostMapping("/sch/schedule/confirm")
+	@ResponseBody
+	public String scheduleConfirm(@RequestParam String weekStart, HttpSession session) {
+		String userName = (String) session.getAttribute("loginUserName");
+		this.scheduleService.confirmSchedule(weekStart, userName);
+		return "success";
 	}
 	
 	//시간변경 대타

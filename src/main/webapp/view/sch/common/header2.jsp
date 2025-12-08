@@ -36,7 +36,6 @@
 			<a href="">근태관리</a>
 			<ul>
 				<li><a href="/sch/schedule/apply">근무 신청</a></li>
-				<li><a href="/sch/schedule/confirm">근무 확정</a></li>
 				<li><a href="/sch/schedule/list">근무시간 조회</a></li>
 				<li><a href="/sch/schedule/swap">시간변경/대타 신청</a></li>
 			</ul>

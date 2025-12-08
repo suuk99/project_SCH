@@ -45,4 +45,8 @@ public class ScheduleService {
 	public void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus, String start, String end) {
 			scheduleDao.saveFixSchedule(userName, weekStart, weekDay, workStatus, start, end);
 	}
+
+	public void confirmSchedule(String weekStart, String userName) {
+		this.scheduleDao.confirmSchedule(weekStart, userName);
+	}
 }

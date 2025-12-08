@@ -51,8 +51,8 @@
             </c:forEach>
         </div>
 
-        <div style="position: fixed; bottom: 220px; left: 50%; transform: translateX(-50%); width: 170px;">
-            <button class="btn btn-neutral" onclick="location.href='/sch/admin/createSchedule'" style="width:170px;">AI 근무표 생성</button>
+        <div style="position: fixed; margin: 100px 0; left: 50%; transform: translateX(-50%); width: 170px;">
+            <button class="btn btn-neutral" onclick="location.href='/sch/admin/createSchedule'" style="width:170px;">근무표 작성</button>
         </div>
     </div>
 </section>

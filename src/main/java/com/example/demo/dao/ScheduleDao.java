@@ -9,6 +9,8 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.Schedule;
 
@@ -22,8 +24,8 @@ public interface ScheduleDao {
 			        workStatus = #{workStatus},
 			        startTime = #{startTime},
 			        endTime = #{endTime},
-			        confirm = #{confirm},
 			        weekStart= #{weekStart}
+			        
 			""")
 	public void saveSchedule(Schedule schedule);
 	
@@ -79,7 +81,13 @@ public interface ScheduleDao {
 		        (#{userName}, #{weekStart}, #{weekDay}, #{workStatus},
 		         NULLIF(#{startTime}, ''), NULLIF(#{endTime}, ''))
 		""")
-	void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus,
+	public void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus,
 		                     String startTime, String endTime);
-
+	
+	@Insert("""
+			INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+				VALUES (#{weekStart}, #{userName}, 1)
+				ON DUPLICATE KEY UPDATE confirm = 1
+			""")
+	public void confirmSchedule(@Param("weekStart") String weekStart, @Param("userName") String userName);
 }

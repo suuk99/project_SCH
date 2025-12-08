@@ -10,11 +10,11 @@
 <%@ include file="/view/sch/common/header2.jsp"%>
 	
 	<section class="area">
-		<div class="table" style="margin-top: 120px;">
+		<div class="table" style="margin-top: 100px;">
 			<form id="scheduleForm">
 				<input type="hidden" name="weekStart" value="">
 				<div class="table-box">
-					<div style="font-size: 25px; font-weight: bold; padding: 15px; margin-bottom: 25px;">근무 신청</div>
+					<div style="font-size: 28px; font-weight: bold; padding: 15px; margin-bottom: 25px;">근무 신청</div>
 					<div id="calendar" style="max-width: 520px; height: 500px; margin-right: auto; margin-left: auto; margin-bottom: 50px;"></div>
 					<tr>
 						<td>월요일</td>
@@ -174,6 +174,23 @@
 		        	var cellDate = $(this).attr('data-date');
 		        	if(selectWeek.includes(cellDate)) $(this).addClass('select-week');
 		        });
+		        
+		        var today = new Date();
+		        today.setHours(0, 0, 0, 0);
+		        
+				var parts = currentWeekStart.split('-');
+		        var selectedMonday = new Date(parts[0], parts[1] - 1, parts[2]);
+		        selectedMonday.setHours(0, 0, 0, 0);
+		        
+		        var deadLineDate = selectedMonday;
+		        
+		        if(deadLineDate <= today) {
+		        	disableForm();
+		        	$('#applyBtn, #saveBtn').hide();
+		        	$('#scheduleForm').css('margin-bottom', '410px');
+		        	alert('이미 신청이 마감된 주입니다');
+		        	return;
+		        }
 	
 		        // 선택 주 서버 체크
 		        $.ajax({
