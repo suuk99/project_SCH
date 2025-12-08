@@ -21,4 +21,8 @@ public class ScheduleNotificationController {
 	public void sendAlertToAll(String message) {
 		template.convertAndSend("/topic/scheduleAlert", message);
 	}
+	
+	public void sendAlertToAdmin(String message) {
+		template.convertAndSendToUser("관리자", "/queue/alert", message);
+	}
 }

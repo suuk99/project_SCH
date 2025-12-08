@@ -90,4 +90,28 @@ public interface ScheduleDao {
 				ON DUPLICATE KEY UPDATE confirm = 1
 			""")
 	public void confirmSchedule(@Param("weekStart") String weekStart, @Param("userName") String userName);
+	
+	@Select("""
+			SELECT COUNT(userName) 
+				FROM scheduleConfirm
+				WHERE confirm = 0
+				AND weekStart = #{weekStart}
+			""")
+	public int countUnconfirmUser(String weekStart);
+	
+	@Delete("""
+			DELETE FROM fixSchedule
+				WHERE weekStart = #{weekStart}
+			""")
+	public void deletFixSchedule(String weekStart);
+	
+	@Insert("""
+			INSERT INTO fixSchedule (userName, weekStart, weekDay, workStatus, startTime, endTime, confirm)
+			SELECT u.name, s.weekStart, s.weekDay, s.workStatus, s.startTime, s.endTime, 1
+			FROM userSchedule AS s
+			INNER JOIN user AS u
+			ON u.userId = s.userId
+			WHERE s.weekStart = #{weekStart}
+			""")
+	public void copyFixSchedule(String weekStart);
 }

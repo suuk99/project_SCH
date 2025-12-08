@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.net.http.WebSocket;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -48,5 +49,18 @@ public class ScheduleService {
 
 	public void confirmSchedule(String weekStart, String userName) {
 		this.scheduleDao.confirmSchedule(weekStart, userName);
+	}
+	
+	//확정 안 한 사용자 수 확인
+	public boolean allUserConfirm(String weekStart) {
+		int unconfirmed = scheduleDao.countUnconfirmUser(weekStart);
+		return unconfirmed == 0;
+	}
+	
+	public void adminConfirm(String weekStart) {
+		//전 주 확정스케줄 삭제
+		this.scheduleDao.deletFixSchedule(weekStart);
+		//이번주 스케줄 저장
+		this.scheduleDao.copyFixSchedule(weekStart);
 	}
 }

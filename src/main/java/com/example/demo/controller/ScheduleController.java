@@ -33,9 +33,11 @@ import jakarta.websocket.Session;
 public class ScheduleController {
 	
 	private ScheduleService scheduleService;
+	private ScheduleNotificationController notifier;
 	
-	public ScheduleController(ScheduleService scheduleService) {
+	public ScheduleController(ScheduleService scheduleService, ScheduleNotificationController scheduleNotificationController) {
 		this.scheduleService = scheduleService;
+		this.notifier = notifier;
 	}
 	
 	//근무 신청
@@ -147,8 +149,19 @@ public class ScheduleController {
 	@PostMapping("/sch/schedule/confirm")
 	@ResponseBody
 	public String scheduleConfirm(@RequestParam String weekStart, HttpSession session) {
+		//로그인 사용자 이름
 		String userName = (String) session.getAttribute("loginUserName");
+		//사용자 확정 저장
 		this.scheduleService.confirmSchedule(weekStart, userName);
+		//모든 사용자 확정 여부 확인
+		boolean allConfirm = scheduleService.allUserConfirm(weekStart);
+		
+		if(allConfirm) {
+			//모두 확정 시 관리자에게 알림
+			notifier.sendAlertToAdmin("모든 사용자가 근무 확정을 완료했습니다.");
+			//최종 확정 처리
+			scheduleService.adminConfirm(weekStart);
+		}
 		return "success";
 	}
 	
