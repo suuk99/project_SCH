@@ -89,7 +89,6 @@
 		            <button class="btn btn-neutral" id="regisBtn" style="width:150px;">스케줄 등록</button>
 	        	</div>
 	        </div>
-	        <div id="alert-area" style="background: #ffe9a4; border: 1px solid #ffcc00; padding: 10px; margin-bottom: 6px; border-radius: 6px;"></div>
 	    </div>
 	</section>
 
@@ -124,53 +123,9 @@
 			return cache;
 		}
 
-		// 🔔🔔🔔 웹소켓 알림 표시 함수 (document.ready 밖으로 이동) 🔔🔔🔔
-		function showAlert(text) {
-			const $alertArea = $('#alert-area');
-			
-			// 알림 메시지 div 생성 (CSS 스타일은 인라인으로 유지)
-			const $alertBox = $(`
-				<div class='alert-box' style="
-					background: #ffe9a4; 
-					border: 1px solid #ffcc00; 
-					padding: 10px; 
-					margin-bottom: 6px; 
-					border-radius: 6px;
-					opacity: 0; /* 초기 투명도 설정 */
-					transition: opacity 0.5s ease-in-out; /* 부드러운 전환 효과 */
-				">${text}</div>`);
-				
-			$alertArea.prepend($alertBox); // 최신 알림이 위에 오도록 prepend 사용
-
-			// 1. 화면에 표시 (Fade In 효과)
-			setTimeout(() => {
-				$alertBox.css('opacity', 1);
-			}, 50); 
-
-			// 2. 5초 후 알림 삭제 (Fade Out 효과)
-			setTimeout(() => {
-				$alertBox.css('opacity', 0); // Fade Out 시작
-				
-				// CSS transition 시간(0.5초) 후에 DOM에서 제거
-				setTimeout(() => {
-					$alertBox.remove();
-				}, 500); 
-			}, 5000); // 5초 동안 표시
-		} // 🚨🚨🚨 showAlert 함수 정의를 여기서 명확하게 닫아줍니다.
-
 		$(document).ready(function() {
-			localStorage.clear();
-			// 웹소켓
-			let socket = new SockJS('/ws');
-			let stomp = Stomp.over(socket);
-			
-			stomp.connect({}, function() {
-				let userId = $('#userId').val(); //로그인한 사용자 ID
-				
-				stomp.subscribe('/topic/scheduleAlert', function(msg) {
-					showAlert(msg.body); // 전역 함수 호출
-				});
-			});
+			// localStorage 초기화
+			//localStorage.clear();
 			
 			// 1. 초기 사용자 목록을 기반으로 캐시 초기화
 			const userRows = $(".user-row");

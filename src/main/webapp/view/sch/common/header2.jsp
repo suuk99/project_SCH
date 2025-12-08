@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>${pageTitle}</title>
-    <!-- 제이쿼리, 폰트어썸, Tailwind, DaisyUI, common.css, common.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
@@ -16,10 +16,10 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-   <!--  <script src="${pageContext.request.contextPath}/resource/js/common.js"></script> -->
 </head>
 <body>
-	<section class="header">
+    
+    <section class="header">
 		<div class="logo">
 			<a href="/sch/home/main"><div>SCHM</div></a>
 		</div>
@@ -64,37 +64,121 @@
 		
 		<a class="logout" href="/sch/user/logout" style="font-weight: bold;"> <i class="fa-solid fa-lock" style="color: #dba309"></i> 로그아웃</a>
 	</section>
+    
+    <div id="toast-container" style="
+	    position: fixed;
+	    top: 60px;
+	    left: 50%;
+	    transform: translateX(-50%);
+	    z-index: 99999;
+	"></div>
 	
 	<script>
-	function showAlert(text) {
-	    // 중요한 점: $('#alert-area') 요소가 모든 JSP 파일의 <body> 안에 있어야 합니다.
-	    const $alertArea = $('#alert-area'); 
-	    
-	    // 알림 메시지 div 생성 (기존에 작성하신 로직 그대로 사용)
-	    const $alertBox = $(`
-	        <div class='alert-box' style="
-	            background: #ffe9a4; 
-	            border: 1px solid #ffcc00; 
-	            padding: 10px; 
-	            margin-bottom: 6px; 
-	            border-radius: 6px;
-	            opacity: 0; 
-	            transition: opacity 0.5s ease-in-out; 
-	        ">${text}</div>`);
-	        
-	    // DOM에 추가
-	    $alertArea.prepend($alertBox); 
-
-	    // 화면 표시 및 타이머 설정 로직
-	    setTimeout(() => {
-	        $alertBox.css('opacity', 1);
-	    }, 50); 
-
-	    setTimeout(() => {
-	        $alertBox.css('opacity', 0); 
-	        setTimeout(() => {
-	            $alertBox.remove();
-	        }, 500); 
-	    }, 5000); 
-	}
+		document.addEventListener('DOMContentLoaded', () => {
+		    const userRole = '${sessionScope.loginUserRole}';
+		    let socket = new SockJS('/ws');
+		    let stomp = Stomp.over(socket);
+		
+            // 웹소켓 연결 시도 및 성공/실패 콜백 정의
+		    stomp.connect({}, function (frame) {
+		
+		        // 1. 전체 사용자 알림 구독 로직 (/topic/scheduleAlert)
+		        stomp.subscribe('/topic/scheduleAlert', function (msg) {
+		            if(userRole === 'ADMIN') return; // 관리자 제외
+		
+		            let text = msg.body;
+		            
+		            try {
+		                // ArrayBuffer 디코딩 로직: 구형 stomp.js에서 메시지 본문이 ArrayBuffer로 올 경우 문자열로 변환
+		                if (msg.body instanceof ArrayBuffer || (typeof msg.body === 'object' && msg.body !== null && msg.body.byteLength > 0)) {
+		                    const decoder = new TextDecoder('utf-8');
+		                    text = decoder.decode(msg.body);
+		                }
+		            } catch (e) {
+		                console.error("메시지 디코딩 오류:", e);
+		                text = "알림 내용 처리 오류"; 
+		            }
+		            
+		            console.log("최종 처리된 알림 내용:", text); 
+		            showAlert(text);
+		        });
+		
+		        // 2. 특정 사용자 알림 구독 로직 (/user/queue/alert)
+		        stomp.subscribe('/user/queue/alert', function (msg) {
+		            const text = msg.body; 
+		            showAlert(text);
+		        });
+		
+		    }, function(error) { // 연결 실패 시 실행 (디버깅용)
+		        console.error("STOMP Connection Error:", error); 
+		    }); 
+		});
+		
+		// ⭐ Toast 알림 함수 (CSS 충돌 방지 스타일 포함)
+		function showAlert(message, actionUrl) {
+		    const container = document.getElementById("toast-container");
+		    const mainColor = "black";
+		    const icon = "ℹ";
+		
+		    const toast = document.createElement("div");
+		    // ... (toast 스타일은 유지 또는 제거) ...
+		    toast.style.width = "500px";
+		    toast.style.background = "#fff";
+		    toast.style.borderRadius = "10px";
+		    toast.style.boxShadow = "0 4px 15px rgba(0,0,0,0.15)";
+		    toast.style.marginBottom = "12px";
+		    toast.style.display = "flex";
+		    toast.style.opacity = "1"; // 애니메이션 제거
+		    toast.style.transform = "translateY(0)";
+		    toast.style.zIndex = "100000"; // z-index 최상위 보장
+		
+		    const leftBar = document.createElement("div");
+		    leftBar.style.width = "6px";
+		    leftBar.style.background = mainColor;
+		
+		    const content = document.createElement("div");
+		    content.style.flex = "1";
+		    content.style.padding = "12px 15px";
+		    
+		    // ⭐⭐ 핵심 수정: 내용 영역 CSS 강제 재정의
+		    content.innerHTML = `
+		        <div style="font-size:28px; font-weight:bold; color:${mainColor}; margin-bottom: 5px;">
+		            ${icon} 알림
+		        </div>
+		        
+		        <div id="alert-message-text-final" style="
+		            font-size:24px     /* ⭐!important: 다른 CSS 무시 */
+		            color:black         /* ⭐!important: 다른 CSS 무시 */
+		            min-height: 20px    /* ⭐!important: 높이 확보 */
+		            line-height: 1.4 
+		            margin-top:4px;
+		            padding-bottom: 5px;
+		            white-space: normal  /* 텍스트 줄바꿈 보장 */
+		            overflow: visible    /* 가려짐 방지 */
+		        ">
+		        </div>
+		    `;
+		    
+		    // ⭐⭐ 텍스트 노드를 사용하여 메시지를 안전하게 삽입
+		    const messageDiv = content.querySelector('#alert-message-text-final');
+		    if (messageDiv) {
+		        messageDiv.textContent = message; 
+		    }
+		    
+		    const closeBtn = document.createElement("div"); 
+		    
+		    closeBtn.innerHTML = "&times;";
+		    closeBtn.style.fontSize = "20px";
+		    closeBtn.style.padding = "10px";
+		    closeBtn.style.cursor = "pointer";
+		    closeBtn.style.color = "#777";
+		    closeBtn.onclick = () => container.removeChild(toast);
+		    
+		    toast.appendChild(leftBar);
+		    toast.appendChild(content);
+		    toast.appendChild(closeBtn);
+		    container.appendChild(toast);
+		    
+		    setTimeout(() => { toast.style.opacity = "1"; toast.style.transform = "translateY(0)"; }, 80);
+		}
 	</script>

@@ -17,11 +17,13 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class NoticeController {
-
+	
+	private ScheduleNotificationController notifier;
 	private NoticeService noticeService;
 
-	public NoticeController(NoticeService noticeService) {
+	public NoticeController(NoticeService noticeService,ScheduleNotificationController notifier) {
 		this.noticeService = noticeService;
+		this.notifier = notifier;
 	}
 
 	// 공지사항 작성
@@ -44,6 +46,7 @@ public class NoticeController {
 		
 		this.noticeService.doWrite(title, content, (int) session.getAttribute("loginUserID"));
 		
+		notifier.sendAlertToAll("새로운 공지사항이 등록되었습니다. 지금 확인해 주세요!");
 		return Util.jsReplace("공지사항 작성이 완료되었습니다.", "/sch/notice/list");
 	}
 
