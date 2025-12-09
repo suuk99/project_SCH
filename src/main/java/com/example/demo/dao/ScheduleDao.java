@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -84,10 +85,11 @@ public interface ScheduleDao {
 	public void saveFixSchedule(String userName, String weekStart, int weekDay, String workStatus,
 		                     String startTime, String endTime);
 	
-	@Insert("""
-			INSERT INTO scheduleConfirm (weekStart, userName, confirm)
-				VALUES (#{weekStart}, #{userName}, 1)
-				ON DUPLICATE KEY UPDATE confirm = 1
+	@Update("""
+			UPDATE scheduleConfirm
+				SET confirm = 1
+				WHERE weekStart = #{weekStart}
+				AND userName = #{userName}
 			""")
 	public void confirmSchedule(@Param("weekStart") String weekStart, @Param("userName") String userName);
 	
@@ -114,4 +116,10 @@ public interface ScheduleDao {
 			WHERE s.weekStart = #{weekStart}
 			""")
 	public void copyFixSchedule(String weekStart);
+	
+	@Insert("""
+			INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+				VALUES (#{weekStart}, #{userName}, 0);
+			""")
+	public void insertScheduleConfirm(String userName, String weekStart, int confirm);
 }

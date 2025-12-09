@@ -35,7 +35,7 @@ public class ScheduleController {
 	private ScheduleService scheduleService;
 	private ScheduleNotificationController notifier;
 	
-	public ScheduleController(ScheduleService scheduleService, ScheduleNotificationController scheduleNotificationController) {
+	public ScheduleController(ScheduleService scheduleService, ScheduleNotificationController notifier) {
 		this.scheduleService = scheduleService;
 		this.notifier = notifier;
 	}
@@ -157,8 +157,6 @@ public class ScheduleController {
 		boolean allConfirm = scheduleService.allUserConfirm(weekStart);
 		
 		if(allConfirm) {
-			//모두 확정 시 관리자에게 알림
-			notifier.sendAlertToAdmin("모든 사용자가 근무 확정을 완료했습니다.");
 			//최종 확정 처리
 			scheduleService.adminConfirm(weekStart);
 		}

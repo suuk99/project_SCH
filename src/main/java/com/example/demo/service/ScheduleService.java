@@ -63,4 +63,8 @@ public class ScheduleService {
 		//이번주 스케줄 저장
 		this.scheduleDao.copyFixSchedule(weekStart);
 	}
+
+	public void insertScheduleConfirm(String userName, String weekStart, int confirm) {
+		this.scheduleDao.insertScheduleConfirm(userName, weekStart, confirm);
+	}
 }

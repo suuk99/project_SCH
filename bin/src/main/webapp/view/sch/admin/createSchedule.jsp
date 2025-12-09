@@ -4,9 +4,11 @@
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
+
 <c:set var="pageTitle" value="스케줄 작성" />
 <c:set var="jsWeekKey" value="${selectWeek}" />
 <%@ include file="/view/sch/common/header2.jsp"%>
+	<input type="hidden" id="userId" value="${loginUser != null ? loginUser.userId : ''}">
 
 	<section>
 	    <div class="table" style="width:1500px; margin-top: 120px; margin-left: auto; margin-right: auto;">
@@ -91,7 +93,7 @@
 	</section>
 
 	<script>
-		// ⭐⭐⭐ (3) 서버 변수를 JavaScript 변수에 직접 할당하여 키 값 오류를 원천 차단 ⭐⭐⭐
+		// ⭐⭐⭐ 서버 변수를 JavaScript 변수에 직접 할당하여 키 값 오류를 원천 차단 ⭐⭐⭐
 		const CURRENT_WEEK_KEY = '${selectWeek}'; 
 		
 		// 1. 전역 데이터 캐시 객체 선언 (DOM과 독립된 데이터 모델)
@@ -122,6 +124,9 @@
 		}
 
 		$(document).ready(function() {
+			//localStorage 초기화
+			//localStorage.clear(); 
+			
 			// 1. 초기 사용자 목록을 기반으로 캐시 초기화
 			const userRows = $(".user-row");
 			const userList = userRows.map(function() { return $(this).data("user"); }).get();
@@ -181,12 +186,12 @@
 		    	
 		    	// 같은 이름의 input이 start/end 두 줄에 있으므로, index 7을 기준으로 나눕니다.
 		    	const inputElements = workDiv.find("input[type='time']");
-		    	const idx = inputElements.index(input) % 7; 
+		    	const inputIndex = inputElements.index(input);
+		    	const idx = inputIndex % 7; 
 		    	
 		    	if (!scheduleCache[userName]) return;
 		    	
 		    	// input이 start row에 있는지, end row에 있는지 확인하여 캐시 업데이트
-		    	const inputIndex = inputElements.index(input);
 		    	
 		    	if (inputIndex < 7) { // 0~6 인덱스는 출근(start) 라인
 		    		scheduleCache[userName].startTimes[idx] = input.val();
@@ -295,8 +300,21 @@
 		            data: JSON.stringify(finalPayload), 
 		            success: function(res) {
 		                alert("스케줄 등록이 완료되었습니다.");
-		                // 성공 시 로컬 저장도 캐시로 진행
+		                // 1. 기존 잠금 리스트를 불러오기
+		                const existingListJSON = localStorage.getItem('lockedWeeksList');
+		                let lockedWeeksList = existingListJSON ? JSON.parse(existingListJSON) : [];
+		                
+		                // 2. 현재 주차 키가 리스트에 없으면 추가
+		                if (!lockedWeeksList.includes(weekStart)) {
+		                    lockedWeeksList.push(weekStart);
+		                }
+
+		                // 3. 업데이트된 리스트를 저장 (모든 등록 주차를 기억)
+		                localStorage.setItem("lockedWeeksList", JSON.stringify(lockedWeeksList)); 
+		                
+		                // 기존 스케줄 데이터 저장 및 필드 비활성화
 		                localStorage.setItem("schedule_" + weekStart, JSON.stringify(scheduleData));
+		                $("#saveBtn, #regisBtn, .select, input[type='time']").prop("disabled", true);
 		                
 		                const checkData = localStorage.getItem("schedule_" + weekStart);
 		                console.log(`[LocalStorage REGIST] Key: schedule_${weekStart}`);
@@ -304,13 +322,19 @@
 		            },
 		            error: function(xhr) {
 		                console.error("등록 실패", xhr);
-		                alert("등록 중 오류 발생 (console 확인)");
 		            }
 		        });
 		    });
-		
+		    
+		   // ⭐ 페이지 로드시 잠금 상태 확인 및 적용 (모든 주차에 대해 확인)
+		   const lockedWeeksJSON = localStorage.getItem('lockedWeeksList');
+		   const lockedWeeksList = lockedWeeksJSON ? JSON.parse(lockedWeeksJSON) : [];
+		   const currentKey = CURRENT_WEEK_KEY;
+		   
+		   if (lockedWeeksList.includes(currentKey)) {
+			   $(".select, input[type='time'], #saveBtn, #regisBtn").prop("disabled", true);
+		       alert("이미 스케줄 등록이 완료된 주입니다.");
+		   }
 		});
 	</script>
-
-
 <%@ include file="/view/sch/common/footer.jsp"%>

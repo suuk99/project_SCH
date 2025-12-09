@@ -22,7 +22,7 @@ public class ScheduleNotificationController {
 		template.convertAndSend("/topic/scheduleAlert", message);
 	}
 	
-	public void sendAlertToAdmin(String message) {
-		template.convertAndSendToUser("관리자", "/queue/alert", message);
+	public void sendAlertToAdmin(String loginUserName, String message) {
+		template.convertAndSendToUser(loginUserName, "/queue/alert", message);
 	}
 }
