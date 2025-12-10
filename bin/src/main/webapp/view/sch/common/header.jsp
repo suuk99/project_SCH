@@ -14,5 +14,8 @@
     <link rel="stylesheet" href="/resource/css/Common.css" />
     <link rel="shortcut icon" href="/resource/images/favicon.ico" />
    <!--  <script src="${pageContext.request.contextPath}/resource/js/common.js"></script> -->
+   
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>

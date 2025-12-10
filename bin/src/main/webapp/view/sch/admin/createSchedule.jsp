@@ -5,14 +5,14 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 
-<c:set var="pageTitle" value="스케줄 작성" />
+<c:set var="pageTitle" value="스케줄 등록" />
 <c:set var="jsWeekKey" value="${selectWeek}" />
 <%@ include file="/view/sch/common/header2.jsp"%>
 	<input type="hidden" id="userId" value="${loginUser != null ? loginUser.userId : ''}">
 
 	<section>
 	    <div class="table" style="width:1500px; margin-top: 120px; margin-left: auto; margin-right: auto;">
-	        <div class="pageName" style="font-size:28px; font-weight:bold; margin-bottom:25px; margin-right: 53%;">스케줄 작성</div>
+	        <div class="pageName" style="font-size:28px; font-weight:bold; margin-bottom:25px; margin-right: 53%;">스케줄 등록</div>
 	
 	        <div style="margin-left:61.5%; display:flex; margin-bottom:25px;">
 	            <div style="padding: 2px 6px; margin-right: 5px; border-radius: 3px;font-size:15px; background-color: #f7f7f7;">주 선택</div>
@@ -95,7 +95,7 @@
 	<script>
 		// ⭐⭐⭐ 서버 변수를 JavaScript 변수에 직접 할당하여 키 값 오류를 원천 차단 ⭐⭐⭐
 		const CURRENT_WEEK_KEY = '${selectWeek}'; 
-		
+
 		// 1. 전역 데이터 캐시 객체 선언 (DOM과 독립된 데이터 모델)
 		let scheduleCache = {}; 
 		
@@ -124,8 +124,8 @@
 		}
 
 		$(document).ready(function() {
-			//localStorage 초기화
-			//localStorage.clear(); 
+			// localStorage 초기화
+			//localStorage.clear();
 			
 			// 1. 초기 사용자 목록을 기반으로 캐시 초기화
 			const userRows = $(".user-row");

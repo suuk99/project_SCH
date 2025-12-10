@@ -1,6 +1,7 @@
 CREATE DATABASE SCH;
 USE SCH;
 
+# 사용자 정보 테이블
 CREATE TABLE `user` (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(20) NOT NULL,
@@ -17,7 +18,7 @@ CREATE TABLE `user` (
 SELECT userId, ROLE FROM USER WHERE userId = 'sss';
 SELECT * FROM `user`;
 
-
+# 사용자 근무 신청 테이블
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   userId VARCHAR(20) NOT NULL,
@@ -25,29 +26,40 @@ CREATE TABLE userSchedule(
   `weekDay` INT NOT NULL,
   startTime TIME,
   endTime TIME,
-  workStatus ENUM('yes', 'no') DEFAULT 'no',
-  confirm BOOLEAN DEFAULT 0
+  workStatus ENUM('yes', 'no') DEFAULT 'no'
 );
 
 DROP TABLE userSchedule;      
 SELECT * FROM userSchedule;
 
+# 스케줄 등록 테이블 
 CREATE TABLE fixSchedule (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    userId VARCHAR(20) NOT NULL,
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    userName VARCHAR(50),
+    weekStart DATE,
+    WEEKDAY INT,
+    workStatus VARCHAR(10),
+    startTime VARCHAR(10),
+    endTime VARCHAR(10),
+    confirm BOOLEAN DEFAULT 0
+);
+
+DROP TABLE fixSchedule
+SELECT * FROM fixSchedule;
+
+# 스케줄 확정 테이블
+CREATE TABLE scheduleConfirm (
     weekStart DATE NOT NULL,
-    `weekDay` INT NOT NULL,
-    startTime TIME,
-    endTime TIME
+    userName VARCHAR(50) NOT NULL,
+    confirm BOOLEAN DEFAULT 0
 );
 
-CREATE TABLE timeTable (
-  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  weekStart DATE NOT NULL,
-  assignedTime TEXT NOT NULL,
-  `status` VARCHAR(30) NOT NULL DEFAULT 'UPLOAD'
-);
-
+DROP TABLE scheduleConfirm;
+SELECT * FROM scheduleConfirm;
+	SELECT COUNT(userName) 
+				FROM scheduleConfirm
+				WHERE confirm = 1
+# 공지사항 테이블 
 DROP TABLE notice;
 CREATE TABLE notice (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -61,7 +73,8 @@ CREATE TABLE notice (
 
 INSERT INTO notice (regDate, writerId, title, content)
 SELECT NOW(), 1, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
-   
+
+# 급여조회 테이블
 CREATE TABLE salary (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     user_id INT UNSIGNED NOT NULL,
@@ -72,9 +85,3 @@ CREATE TABLE salary (
     deductions INT UNSIGNED NOT NULL,
     net_pay INT UNSIGNED NOT NULL
 );
-
-SELECT u.name, s.weekDay, s.workStatus, s.startTime, s.endTime
-    FROM `user` AS u
-    INNER JOIN userSchedule AS s
-    ON u.userId = s.userId
-    ORDER BY u.name;

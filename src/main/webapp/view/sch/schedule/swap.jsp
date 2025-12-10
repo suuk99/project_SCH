@@ -53,21 +53,29 @@
 	
 	        <div class="function-area" style="margin-top: 50px;">
 	        	<div class="functi" style="display: flex; justify-content: space-between; margin: 0 19%;">
-	        		<div id="swap-time" class="tap-item" style="font-size: 23px; background-color: black; color: white; width: 100%; border-radius: 6px 6px 0 0; padding: 5px 0;">대타  요청</div>
+	        		<div id="swap-time" class="tap-item" style="font-size: 23px; background-color: #282929; color: white; width: 100%; border-radius: 6px 6px 0 0; padding: 5px 0;">대타  요청</div>
 	        	</div>
 	        </div>
 	        
-	        <div class="info-input" style="background-color: #fafbfc; margin: 0 19%; height: 300px; border-radius: 0 0 6px 6px">
+	        <div class="info-input" style="background-color: #fafbfc; margin: 0 19%; height: 300px; border-radius: 0 0 6px 6px;">
                 <div id="swap-form" class="tab-content-item">
-                    <h3>🤝 대타 요청 정보 입력</h3>
-                    <p>대타 요청 폼 내용입니다. (요청 날짜, 대상자 선택 등)</p>
+                
+                	<div class="desired-date" style="font-size: 18px; font-weight: bold;">대타 희망일 선택</div>
+                	
+                	<div class="user" style="font-size: 18px; font-weight: bold; margin-top: 60px;">대타 요청자 선택<span style="margin-right: 75px;"></span>
+                		<select class ="select" name="" id="user">
+                			<option value="">ss</option>
+                		</select>
+                	</div>
                 </div>
 	        </div>
 	        
-	        <div class="btn-area" style="position: fixed; margin-top: 60px; margin-bottom: 150px; left: 50%; transform: translateX(-50%); width: 170px;">
-	            <button class="btn btn-neutral" style="width:170px;">요청하기</button>
-	        </div>
+	        <div class="btn-area" style="margin-top: 40px; margin-bottom: 200px;">
+			    <button class="btn btn-neutral" style="width:170px;">요청하기</button>
+			</div>
+
 	        
 	    </div>
 	</section>
+	
 <%@ include file="/view/sch/common/footer.jsp"%>
