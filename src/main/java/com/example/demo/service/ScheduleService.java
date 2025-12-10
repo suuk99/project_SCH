@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import java.net.http.WebSocket;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dao.ScheduleDao;
+import com.example.demo.dto.FixSchedule;
 import com.example.demo.dto.Schedule;
 
 @Service
@@ -66,5 +68,32 @@ public class ScheduleService {
 
 	public void insertScheduleConfirm(String userName, String weekStart, int confirm) {
 		this.scheduleDao.insertScheduleConfirm(userName, weekStart, confirm);
+	}
+
+	public Integer getUserConfirm(String userName, String weekStart) {
+		return this.scheduleDao.getUserConfirm(userName, weekStart);
+	}
+
+	public List<FixSchedule> getFixSchedule(String userName) {
+	    List<FixSchedule> list = scheduleDao.getFixSchedule(userName);
+
+	    for (FixSchedule fs : list) {
+
+	        // weekStart + weekDay 로 날짜 계산
+	        LocalDate base = fs.getWeekStart().plusDays(fs.getWeekDay() - 1);
+
+	        String start = fs.getStartTime();
+	        String end = fs.getEndTime();
+
+	        // ⭐ null 방어 로직 추가 (중요)
+	        if (start == null || end == null) {
+	            // null이면 캘린더에 표시 못하므로 그냥 건너뜀
+	            continue;
+	        }
+
+	        fs.setStart(LocalDateTime.parse(base + "T" + start));
+	        fs.setEnd(LocalDateTime.parse(base + "T" + end));
+	    }
+	    return list;
 	}
 }

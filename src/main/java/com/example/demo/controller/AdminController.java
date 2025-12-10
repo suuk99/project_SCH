@@ -90,7 +90,7 @@ public class AdminController {
         LocalDate today = LocalDate.now();
         int dayOfWeek = today.getDayOfWeek().getValue();
         LocalDate thisMonday = today.minusDays(dayOfWeek - 1);
-        LocalDate baseStart = thisMonday.plusWeeks(2);
+        LocalDate baseStart = thisMonday.plusWeeks(1);
 
         List<Map<String, String>> weekList = new ArrayList<>();
 
@@ -158,13 +158,6 @@ public class AdminController {
         }
         notifier.sendAlertToAll("새로운 스케줄이 등록되었습니다. 지금 확인해 주세요!");
         return "SUCCESS";
-    }
-
-
-    // 시간표 업로드
-    @GetMapping("/sch/admin/uploadTimeTable")
-    public String uploadTimeTable() {
-        return "sch/admin/uploadTimeTable";
     }
 
     // 시간 변경 대타 승인

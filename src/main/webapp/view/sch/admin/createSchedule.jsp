@@ -95,7 +95,7 @@
 	<script>
 		// ⭐⭐⭐ 서버 변수를 JavaScript 변수에 직접 할당하여 키 값 오류를 원천 차단 ⭐⭐⭐
 		const CURRENT_WEEK_KEY = '${selectWeek}'; 
-		
+
 		// 1. 전역 데이터 캐시 객체 선언 (DOM과 독립된 데이터 모델)
 		let scheduleCache = {}; 
 		

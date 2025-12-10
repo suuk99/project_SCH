@@ -16,7 +16,7 @@ public class Schedule {
 	private int weekDay;			// 1=월, 2=화 ..
 	private String startTime;		// HH:mm
 	private String endTime;			// HH:mm
-	private boolean confirm;		// 승인 여부
+	private int confirm;		// 승인 여부
 	private String workStatus;
 	private LocalDate start;
 }

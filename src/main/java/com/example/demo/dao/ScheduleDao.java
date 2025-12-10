@@ -13,6 +13,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.demo.dto.FixSchedule;
 import com.example.demo.dto.Schedule;
 
 @Mapper
@@ -122,4 +123,19 @@ public interface ScheduleDao {
 				VALUES (#{weekStart}, #{userName}, 0);
 			""")
 	public void insertScheduleConfirm(String userName, String weekStart, int confirm);
+
+	@Select("""
+			SELECT confirm 
+				FROM scheduleConfirm
+				WHERE userName = #{userName}
+				AND weekStart = #{weekStart}
+			""")
+	public Integer getUserConfirm(String userName, String weekStart);
+
+	@Select("""
+			SELECT *
+				FROM fixSchedule
+				WHERE userName = #{userName}
+			""")
+	public List<FixSchedule> getFixSchedule(String userName);
 }

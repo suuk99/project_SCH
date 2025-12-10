@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.example.demo.dto.FixSchedule;
 import com.example.demo.dto.ResultData;
 import com.example.demo.dto.Schedule;
 import com.example.demo.service.ScheduleService;
@@ -73,7 +74,7 @@ public class ScheduleController {
 	        s.setWorkStatus(workStatus);
 	        s.setStartTime(request.getParameter("startTime"+i));
 	        s.setEndTime(request.getParameter("endTime"+i));
-	        s.setConfirm(false);
+	        s.setConfirm(0);
 
 	        if(s.getStartTime() != null && s.getStartTime().isEmpty()) {
 	            s.setStartTime(null);
@@ -141,7 +142,21 @@ public class ScheduleController {
 	
 	//근무시간 조회
 	@GetMapping("/sch/schedule/list")
-	public String scheduleList() {
+	public String scheduleList(Model model, @SessionAttribute("loginUserName") String userName, @RequestParam(required = false) String weekStart) {
+		// 월요일을 기본값으로 세팅
+		if(weekStart == null) {
+			weekStart = LocalDate.now().with(DayOfWeek.MONDAY).toString();
+		}
+		// 확인버튼 활성화 여부
+		Integer confirm = scheduleService.getUserConfirm(userName, weekStart);
+		if(confirm == null) confirm = 0;
+		
+		model.addAttribute("confirm", confirm);
+		model.addAttribute("weekStart", weekStart);
+		
+		List<FixSchedule> fixed = scheduleService.getFixSchedule(userName);
+		model.addAttribute("fixed", fixed);
+		
 		return "sch/schedule/list";
 	}
 	
