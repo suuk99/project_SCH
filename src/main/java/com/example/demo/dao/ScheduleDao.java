@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.FixSchedule;
 import com.example.demo.dto.Schedule;
+import com.example.demo.dto.SwapRequest;
+import com.example.demo.service.ScheduleService;
 
 @Mapper
 public interface ScheduleDao {
@@ -138,4 +140,38 @@ public interface ScheduleDao {
 				WHERE userName = #{userName}
 			""")
 	public List<FixSchedule> getFixSchedule(String userName);
+	
+	@Select("""
+			SELECT u.userId, u.name, f.weekDay, f.startTime, f.endTime, f.workStatus
+			    FROM `user` AS u
+			    LEFT JOIN fixSchedule AS f
+			        ON u.name = f.userName
+			        AND f.weekStart = #{weekStart}
+			    WHERE u.name != '관리자'
+			    ORDER BY u.name
+			""")
+	public List<Map<String, Object>> getAllUserName(@Param("weekStart") String weekStart);
+	
+	@Select("""
+			SELECT userId, name
+				FROM user
+				WHERE role != 'ADMIN'
+				ORDER BY name
+			""")
+	public List<Map<String, Object>> getUserInfo();
+
+	@Insert("""
+			INSERT INTO swapRequest (requester, target, weekStart, weekDate, startTime, endTime, status)
+				VALUES (#{requester}, #{target}, #{weekStart}, #{weekDate}, #{startTime}, #{endTime}, 'pending')
+			""")
+	public void insertSwapRequest(Map<String, Object> data);
+	
+	@Select("""
+			SELECT * 
+				FROM swapRequest
+				WHERE target = #{target}
+				AND status = 'pending'
+				ORDER BY weekStart, weekDate
+			""")
+	public List<SwapRequest> getPending(String userId);
 }

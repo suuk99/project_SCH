@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.net.http.WebSocket;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.dao.ScheduleDao;
 import com.example.demo.dto.FixSchedule;
 import com.example.demo.dto.Schedule;
+import com.example.demo.dto.SwapRequest;
 
 @Service
 public class ScheduleService {
@@ -95,5 +97,43 @@ public class ScheduleService {
 	        fs.setEnd(LocalDateTime.parse(base + "T" + end));
 	    }
 	    return list;
+	}
+
+	public Map<String, String[]> getFixScheduleByWeek(String weekStartStr) {
+
+	    Map<String, String[]> scheduleMap = new LinkedHashMap<>();
+
+	    // DAO에서 필요한 데이터 전부 가져오기
+	    List<Map<String, Object>> users = scheduleDao.getAllUserName(weekStartStr);
+
+	    for (Map<String, Object> user : users) {
+
+	        String userName = (String) user.get("name");
+	        Integer weekDay = null;
+	        if (user.get("weekDay") instanceof Number) {
+	            weekDay = ((Number) user.get("weekDay")).intValue();
+	        }
+	        String startTime = (String) user.get("startTime");
+	        String endTime = (String) user.get("endTime");
+
+	        // 사용자별 배열 없으면 생성
+	        scheduleMap.putIfAbsent(userName, new String[7]);
+	        String[] days = scheduleMap.get(userName);
+
+	        // 근무 데이터가 있을 때만 채움
+	        if (weekDay != null && startTime != null && endTime != null) {
+	            days[weekDay - 1] = startTime.substring(0, 5) + "~" + endTime.substring(0, 5);
+	        } 
+	    }
+
+	    return scheduleMap;
+	}
+
+	public void requestSwap(Map<String, Object> data) {
+		this.scheduleDao.insertSwapRequest(data);
+	}
+
+	public List<SwapRequest> getPending(String userId) {
+		return this.scheduleDao.getPending(userId);
 	}
 }

@@ -38,6 +38,7 @@
 				<li><a href="/sch/schedule/apply">근무 신청</a></li>
 				<li><a href="/sch/schedule/list">근무시간 조회</a></li>
 				<li><a href="/sch/schedule/swap">대타 신청</a></li>
+				<li><a href="/sch/schedule/swapConfirm">대타요청 확인</a></li>
 			</ul>
 		</div>
 			
