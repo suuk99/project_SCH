@@ -45,7 +45,7 @@
 		<div class="menu">
 			<a href="">급여정보</a>
 			<ul>
-				<li><a href="/sch/user/selectSal">급여조회</a></li>
+				<li><a href="/sch/salary/select">급여조회</a></li>
 			</ul>
 		</div>
 		

@@ -219,10 +219,4 @@ public class UserController {
 		
 		return Util.jsReplace("비밀번호 변경이 완료되었습니다", "/sch/home/main");
 	}
-	
-	//급여조회
-	@GetMapping("/sch/user/selectSal")
-	public String selectSal() {
-		return "sch/user/selectSal";
-	}
 }
