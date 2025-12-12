@@ -17,7 +17,7 @@
 	        <div class="area-1" style="width: 100%;">
 	            <div style="border-bottom: 1px solid #dedede; margin: 0 auto 30px; width: 70%;"></div>
 	
-	            <div class="selectMonth" style="text-align: right; margin-right: 16%; margin-bottom: 75px; font-size: 16px;">
+	            <div class="selectMonth" style="text-align: right; margin-right: 16%; margin-bottom: 50px; font-size: 16px;">
 	                <label for="salaryMonth" style="margin-right: 14px; font-weight: bold;">조회 연월</label>
 	                <input class="input" type="month" style="width: 160px; height: 25px;"/>
 	            </div>
@@ -86,18 +86,20 @@
 		      var calendar = new FullCalendar.Calendar(calendarEl, {
 		          initialView: 'dayGridMonth', // 월별 달력
 		          locale: 'ko',                // 한국어
-		          headerToolbar: {
-		        	  left: '',
-		        	  center: 'title',
-		        	  right: ''
-		          },	   
-		          titleFormat: {
-		        	  year: 'numeric',
-		        	  month: 'long'
-		          },
+		          headerToolbar: {left: '', center: 'title', right: ''},	   
+		          titleFormat: {year: 'numeric', month: 'long'},
 		          events: []                   // 나중에 근무시간 데이터를 넣을 수 있음
 		      });
 		      calendar.render();
+		      
+		      //조회 연월
+		      var monthInput = document.querySelector('input[type="month"]');
+		      monthInput.addEventListener('change', function() {
+		    	 if(this.value) {
+		    		 var selectDate = this.value + '-01';
+		    		 calendar.gotoDate(selectDate);
+		    	 } 
+		      });
 		  });
 	</script>
 	
