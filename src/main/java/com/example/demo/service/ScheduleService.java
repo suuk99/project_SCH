@@ -3,12 +3,14 @@ package com.example.demo.service;
 import java.net.http.WebSocket;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.example.demo.controller.ScheduleNotificationController;
 import com.example.demo.dao.ScheduleDao;
 import com.example.demo.dto.FixSchedule;
 import com.example.demo.dto.Schedule;
@@ -17,10 +19,12 @@ import com.example.demo.dto.SwapRequest;
 @Service
 public class ScheduleService {
 	
+	private ScheduleNotificationController notifier;
 	private ScheduleDao scheduleDao;
 	
-	public ScheduleService(ScheduleDao scheduleDao) {
+	public ScheduleService(ScheduleDao scheduleDao, ScheduleNotificationController notifier) {
 	    this.scheduleDao = scheduleDao;
+	    this.notifier = notifier;
 	}
 
 	public void saveSchedule(Schedule schedule) {
@@ -108,24 +112,21 @@ public class ScheduleService {
 
 	    for (Map<String, Object> user : users) {
 
-	        String userName = (String) user.get("name");
-	        Integer weekDay = null;
-	        if (user.get("weekDay") instanceof Number) {
-	            weekDay = ((Number) user.get("weekDay")).intValue();
-	        }
+	    	String userName = (String) user.get("name");
+	        Integer weekDay = user.get("weekDay") instanceof Number ? ((Number) user.get("weekDay")).intValue() : null;
 	        String startTime = (String) user.get("startTime");
 	        String endTime = (String) user.get("endTime");
 
-	        // 사용자별 배열 없으면 생성
 	        scheduleMap.putIfAbsent(userName, new String[7]);
 	        String[] days = scheduleMap.get(userName);
 
-	        // 근무 데이터가 있을 때만 채움
+	        // 실제 근무시간이 있는 경우만 넣음
 	        if (weekDay != null && startTime != null && endTime != null) {
 	            days[weekDay - 1] = startTime.substring(0, 5) + "~" + endTime.substring(0, 5);
-	        } 
+	        } else {
+	            days[weekDay != null ? weekDay - 1 : 0] = null; // 비어있으면 null
+	        }
 	    }
-
 	    return scheduleMap;
 	}
 
@@ -135,5 +136,35 @@ public class ScheduleService {
 
 	public List<SwapRequest> getPending(String userId) {
 		return this.scheduleDao.getPending(userId);
+	}
+
+	public void updateSwapStatus(int id, String status) {
+		this.scheduleDao.updateSwapStatus(id, status);
+	}
+
+	public void processSwapAppove(int id) {
+		SwapRequest req = scheduleDao.getSwapRequestId(id);
+		
+		String requester = req.getRequester();
+		String target = req.getTarget();
+		LocalDate swapDate = req.getSwapDate();
+		int weekDate = req.getWeekDate();
+		LocalTime startTime = req.getStartTime();
+		LocalTime endTime = req.getEndTime();
+		LocalDate weekStart = req.getWeekStart();
+		
+		//형변환
+		String start = startTime.toString();
+		String end = endTime.toString();
+		
+		//요청 상태 수락으로 변경
+		this.scheduleDao.updateSwapStatus(id, "approved");
+		//요청자 기존 근무 삭제
+		this.scheduleDao.deleteFixSchedule(requester, weekStart, weekDate);
+		//수락자 근무 추가
+		this.scheduleDao.insertFixSchedule(target, weekStart, weekDate, "대타", start, end, 1);
+		
+		//수락 시 웹소켓으로 요청자에게 알림
+		this.notifier.sendAlertToUser(requester, "대타 요청이 수락되었습니다.");
 	}
 }

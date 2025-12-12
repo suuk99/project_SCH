@@ -1,6 +1,7 @@
 package com.example.demo.dao;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -161,8 +162,8 @@ public interface ScheduleDao {
 	public List<Map<String, Object>> getUserInfo();
 
 	@Insert("""
-			INSERT INTO swapRequest (requester, target, weekStart, weekDate, startTime, endTime, status)
-				VALUES (#{requester}, #{target}, #{weekStart}, #{weekDate}, #{startTime}, #{endTime}, 'pending')
+			INSERT INTO swapRequest (requester, target, swapDate, weekStart, weekDate, startTime, endTime, status)
+				VALUES (#{requester}, #{target}, #{swapDate}, #{weekStart}, #{weekDate}, #{startTime}, #{endTime}, 'pending')
 			""")
 	public void insertSwapRequest(Map<String, Object> data);
 	
@@ -174,4 +175,38 @@ public interface ScheduleDao {
 				ORDER BY weekStart, weekDate
 			""")
 	public List<SwapRequest> getPending(String userId);
+	
+	//대타 요청 상태 변경
+	@Update("""
+			UPDATE swapRequest
+				SET `status` = #{status}
+				WHERE id = #{id}
+			""")
+	public void updateSwapStatus(int id, String status);
+	
+	//대타 상황 조회
+	@Select("""
+			SELECT * 	
+				FROM swapRequest
+				WHERE id = #{id}
+			""")
+	public SwapRequest getSwapRequestId(int id);
+
+	//요청 수락 시 요청자 근무 삭제
+	@Delete("""
+			DELETE 
+				FROM fixSchedule
+				WHERE userName = #{requester}
+				AND weekStart = #{weekStart}
+				AND `weekDay` = #{weekDate}
+			""")
+	public void deleteFixSchedule(String requester, LocalDate weekStart, int weekDate);
+
+	//수락한 사용자 근무 추가
+	@Insert("""
+			INSERT INTO fixSchedule (userName, weekStart, `weekDay`, workStatus, startTime, endTime, confirm)
+				VALUES (#{target}, #{weekStart}, #{weekDate}, "대타", #{start}, #{end}, #{confirm})
+			""")
+	public void insertFixSchedule(@Param("target") String target, @Param("weekStart") LocalDate weekStart, @Param("weekDate") int weekDate, @Param("workStatus") String workStatus, @Param("start") String start,
+								  @Param("end") String end, @Param("confirm") int confirm);
 }

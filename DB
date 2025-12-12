@@ -71,13 +71,13 @@ CREATE TABLE swapRequest (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     requester VARCHAR(30) NOT NULL,
     target VARCHAR(30) NOT NULL,
+    swapDate DATE NOT NULL,
     weekStart DATE NOT NULL,
     weekDate INT NOT NULL,
     startTime TIME NOT NULL,
     endTime TIME NOT NULL,
     `status` VARCHAR(20) DEFAULT 'pending'
 );
-
 # pending = 보류, approved = 승인, rejected = 거부
 
 SELECT * FROM swapRequest;

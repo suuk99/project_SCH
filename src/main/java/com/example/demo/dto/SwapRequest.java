@@ -18,4 +18,8 @@ public class SwapRequest {
 	private LocalTime startTime;
 	private LocalTime endTime;
 	private String status;
+	private String startTimeStr;
+	private String endTimeStr;
+	private LocalDate swapDate;
+	private int id;
 }

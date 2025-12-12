@@ -165,6 +165,16 @@ public class ScheduleController {
 		return "sch/schedule/list";
 	}
 	
+	//근무확인 버튼 관련
+	@GetMapping("/sch/schedule/confirmCheck")
+	@ResponseBody
+	public int confirmCheck(@SessionAttribute("loginUserName") String userName,
+	                        @RequestParam String weekStart) {
+	    Integer confirm = scheduleService.getUserConfirm(userName, weekStart);
+	    if (confirm == null) confirm = 0;
+	    return confirm;
+	}
+	
 	//근무확정 클릭
 	@PostMapping("/sch/schedule/confirm")
 	@ResponseBody
@@ -244,18 +254,48 @@ public class ScheduleController {
 		//웹소켓으로 알림 전송
 		String targetUser = (String) data.get("target"); //요청받는 사용자
 		String requester = (String) data.get("requester"); //요청한 사용자
-		String message = requester + "님이 대타를 요청했습니다. 바로 확인해주세요!";
+		String message = "새로운 대타 요청이 있습니다. 지금 바로 확인해주세요!";
 		notifier.sendAlertToUser(targetUser, message);
 		
 		return "SUCCESS";
 	}
 	
+	//대타요청 확인
 	@GetMapping("/sch/schedule/swapConfirm")
 	public String swapConfirm(Model model, @SessionAttribute("loginUserName") String userId) {
 		List<SwapRequest> requests = scheduleService.getPending(userId);
+		DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+		
+		requests.forEach(req -> {
+			req.setStartTimeStr(req.getStartTime().format(timeFormatter));
+			req.setEndTimeStr(req.getEndTime().format(timeFormatter));
+		});
+		
 		model.addAttribute("requests", requests);
 		return "sch/schedule/swapConfirm";
 	}
 	
+	//요청 수락 시 
+	@PostMapping("/sch/schedule/swap/o")
+	@ResponseBody
+	public String approveSwap(@RequestBody Map<String, Object> data) {
+		int id = (int) data.get("id");
+		this.scheduleService.processSwapAppove(id);
+		return "ok";
+	}
 	
+	@PostMapping("/sch/schedule/swap/x")
+	@ResponseBody
+	public String rejectSwap(@RequestBody Map<String, Object> data) {
+		int id = (int) data.get("id");
+		SwapRequest req = scheduleDao.getSwapRequestId(id);
+		String requester = req.getRequester();
+		String target = req.getTarget();
+		
+		this.scheduleService.updateSwapStatus(id, "rejected");
+		
+		//거절 시 사용자에게 웹소켓으로 실시간 알림
+		this.notifier.sendAlertToUser(requester, "대타 요청이 거절되었습니다. 다른 사용자에게 요청해주세요!");
+		return "ok";
+	}
 }

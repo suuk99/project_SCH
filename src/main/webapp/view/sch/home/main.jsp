@@ -10,7 +10,7 @@
 	<section>
 		<div class="table" style="margin-top: 200px; margin-left: auto; margin-right: auto; width: 1500px;;">
 			<div style="margin-left: auto; margin-right: auto;">
-				<img src="${pageContext.request.contextPath}/resource/img/111.png">
+				<img src="${pageContext.request.contextPath}/resource/img/777.png">
 			</div>
 			
 			<div style="display: flex;">
