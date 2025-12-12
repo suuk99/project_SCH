@@ -19,7 +19,7 @@ public class FixSchedule {
 	private String startTime;
 	private String endTime;
 	private int confirm;
-	
 	private LocalDateTime start;
 	private LocalDateTime end;
+	private LocalDate date;
 }

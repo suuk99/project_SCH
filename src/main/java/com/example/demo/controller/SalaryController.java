@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.example.demo.dto.FixSchedule;
 import com.example.demo.service.ScheduleService;
+
 
 @Controller
 public class SalaryController {
@@ -24,30 +27,20 @@ public class SalaryController {
 	}
 	
 	@GetMapping("/sch/salary/select") 
-	public String selectSalary() {
-		return("sch/salary/select");
-	}
-	
-	@GetMapping("/sch/salary/calendar")
-	@ResponseBody
-	public List<Map<String, Object>> getFixSchedule(@RequestParam String userName, @RequestParam String month) {
-		LocalDate start = LocalDate.parse(month + "-01");
-		LocalDate end = start.withDayOfMonth(start.lengthOfMonth());
+	public String selectSalary(Model model, @SessionAttribute("loginUserName") String userName, @RequestParam(required = false) String weekStart) {
 		
-		//확정 스케줄 조회
 		List<FixSchedule> schedules = this.scheduleService.getFixSchedule(userName);
 		
-		List<Map<String, Object>> events = new ArrayList<>();
-		for(FixSchedule s : schedules) {
-			Map<String, Object> event = new HashMap<>();
-			event.put("title", s.getWorkStatus());
-			LocalDate eventDate = s.getWeekStart().plusDays(s.getWeekDay() - 1);
-			event.put("start", eventDate.toString());
-			event.put("startTime", s.getStartTime());
-			event.put("endTime", s.getEndTime());
-			events.add(event);
+		if(weekStart == null || weekStart.isEmpty()) {
+			weekStart = LocalDate.now().withDayOfMonth(1).toString();
 		}
-		return events;
+		
+		model.addAttribute("fixScheduleList", schedules);
+		model.addAttribute("userName", userName);
+		model.addAttribute("weekStart", weekStart);
+		
+		return("sch/salary/select");
 	}
+
 	
 }

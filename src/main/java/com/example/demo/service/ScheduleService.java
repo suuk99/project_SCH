@@ -99,6 +99,7 @@ public class ScheduleService {
 
 	        fs.setStart(LocalDateTime.parse(base + "T" + start));
 	        fs.setEnd(LocalDateTime.parse(base + "T" + end));
+	        fs.setDate(base);
 	    }
 	    return list;
 	}

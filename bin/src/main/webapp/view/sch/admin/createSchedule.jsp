@@ -14,7 +14,7 @@
 	    <div class="table" style="width:1500px; margin-top: 120px; margin-left: auto; margin-right: auto;">
 	        <div class="pageName" style="font-size:28px; font-weight:bold; margin-bottom:25px; margin-right: 53%;">스케줄 등록</div>
 	
-	        <div style="margin-left:61.5%; display:flex; margin-bottom:25px;">
+	        <div style="margin-left:64%; display:flex; margin-bottom:25px;">
 	            <div style="padding: 2px 6px; margin-right: 5px; border-radius: 3px;font-size:15px; background-color: #f7f7f7;">주 선택</div>
 	            <%-- ⭐ (1) ID 추가 및 value="${week.start}"가 비어있지 않은지 서버측에서 확인 완료된 것으로 가정 --%>
 	            <select name="week" id="weekSelector" onchange="location.href='?week=' + this.value;">

@@ -56,35 +56,29 @@
 	    var currentWeekStart = '${weekStart}';
 	    var confirmVal = ${confirm};
 	    var selectedWeekEls = [];
-	    
-	    // 주별 근무시간 저장
-	    var weekWorkMap = {};
-		<c:forEach var="fs" items="${fixed}">
-		    var weekStart = '${fs.weekStart}';
-		    weekStart = weekStart.replace(/"/g, ''); // 혹시 따옴표 문제 제거
-		    if(!weekWorkMap[weekStart]) weekWorkMap[weekStart] = [];
-		    weekWorkMap[weekStart].push({ 
-		        date: '${fs.start}'.substring(0,10), 
-		        time: '${fs.startTime}'.substring(0,5) + ' - ' + '${fs.endTime}'.substring(0,5)
-		    });
-		</c:forEach>
 	
-	    // 확정 스케줄 이벤트
+	    var weekWorkMap = {};
+	    <c:forEach var="fs" items="${fixed}">
+	        var weekStart = '${fs.weekStart}'.replace(/"/g, '');
+	        if(!weekWorkMap[weekStart]) weekWorkMap[weekStart] = [];
+	        weekWorkMap[weekStart].push({
+	            date: '${fs.start}'.substring(0,10),
+	            time: '${fs.startTime}'.substring(0,5) + ' - ' + '${fs.endTime}'.substring(0,5)
+	        });
+	    </c:forEach>
+	
 	    var fixedEvents = [];
 	    <c:forEach var="fs" items="${fixed}">
-	        var startTime = '${fs.startTime}'.substring(0,5);
-	        var endTime = '${fs.endTime}'.substring(0,5);
 	        fixedEvents.push({
 	            start: '${fs.start}',
 	            end: '${fs.end}',
-	            title: startTime + '-' + endTime,
+	            title: '${fs.startTime}'.substring(0,5) + '-' + '${fs.endTime}'.substring(0,5),
 	            display: 'block',
 	            backgroundColor: '#4b9fff',
 	            borderColor: '#4b9fff'
 	        });
 	    </c:forEach>
 	
-	    // FullCalendar 초기화
 	    var calendar = new FullCalendar.Calendar(calendarEl, {
 	        initialView: 'dayGridMonth',
 	        locale: 'ko',
@@ -95,6 +89,7 @@
 	            handleWeekSelect(info.dateStr);
 	        }
 	    });
+	
 	    calendar.render();
 	
 	    function highlightWeek(weekStart) {
@@ -123,26 +118,22 @@
 	        fillWeekTimes();
 	    }
 	
-	    function buttonState(weekStartStr) {
-	        if(!weekStartStr) return;
-	        const parts = weekStartStr.split('-');
-	        const weekStartDate = new Date(parts[0], parts[1]-1, parts[2]);
-	        weekStartDate.setHours(0,0,0,0);
+	    // 🔥 버튼활성화 로직 AJAX로 confirm 갱신
+	    function updateButtonStateAjax(weekStartStr) {
+	        $.ajax({
+	            url: '/sch/schedule/confirmCheck',
+	            type: 'get',
+	            data: { weekStart: weekStartStr },
+	            success: function(confirm){
+	                confirmVal = confirm; // 서버에서 받은 값으로 갱신
 	
-	        const today = new Date();
-	        today.setHours(0,0,0,0);
-	
-	        const day = today.getDay();
-	        const daysToNextSunday = (7 - day) + 6;
-	        const nextSunday = new Date(today);
-	        nextSunday.setDate(today.getDate() + daysToNextSunday);
-	        nextSunday.setHours(23,59,59,999);
-	
-	        if(weekStartDate >= today && weekStartDate <= nextSunday && confirmVal != 1) {
-	            $('.btn.btn-neutral').attr('disabled', false);
-	        } else {
-	            $('.btn.btn-neutral').attr('disabled', true);
-	        }
+	                if(confirmVal == 1){
+	                    $('.btn.btn-neutral').attr('disabled', true);
+	                } else {
+	                    $('.btn.btn-neutral').attr('disabled', false);
+	                }
+	            }
+	        });
 	    }
 	
 	    function handleWeekSelect(dateStr){
@@ -175,7 +166,9 @@
 	            }
 	        });
 	
-	        buttonState(currentWeekStart);
+	        // 🔥 주 클릭 시 confirm 값 서버에서 다시 불러오기
+	        updateButtonStateAjax(currentWeekStart);
+	
 	        fillWeekTimes();
 	        calendar.gotoDate(dateStr);
 	    }
@@ -184,6 +177,7 @@
 	        const weekDates = [];
 	        const parts = currentWeekStart.split('-');
 	        const monday = new Date(parts[0], parts[1]-1, parts[2]);
+	
 	        for(let i=0;i<7;i++){
 	            const d = new Date(monday);
 	            d.setDate(monday.getDate() + i);
@@ -205,7 +199,7 @@
 	
 	    $(document).ready(function() {
 	        highlightWeek(currentWeekStart);
-	        buttonState(currentWeekStart);
+	        updateButtonStateAjax(currentWeekStart);  // 🔥 초기 로딩도 서버값 반영
 	    });
 	
 	    $('.btn.btn-neutral').click(function() {
@@ -221,6 +215,8 @@
 	            success: function(data) {
 	                alert('근무가 확정되었습니다.');
 	                $('.btn.btn-neutral').attr('disabled', true);
+	
+	                updateButtonStateAjax(currentWeekStart); // 🔥 서버 반영 후 즉시 다시 확인
 	            },
 	            error: function(err) {
 	                console.error(err);
@@ -229,5 +225,7 @@
 	        });
 	    });
 	</script>
+
+
 
 <%@ include file="/view/sch/common/footer.jsp"%>

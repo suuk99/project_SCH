@@ -8,10 +8,10 @@
 <%@ include file="/view/sch/common/header2.jsp"%>
 
 	<section>
-	    <div class="table" style="width:1300px; margin-top: 120px; margin-left: auto; margin-right: auto;">
+	    <div class="table" style="width:1500px; margin-top: 120px; margin-left: auto; margin-right: auto;">
 	        <div class="pageName" style="font-size:28px; font-weight:bold; margin-bottom:25px; margin-right: 50%;">근무신청 현황</div>
 	
-	        <div style="margin-left:61.5%; display:flex; margin-bottom:25px;">
+	        <div style="margin-left:64%; display:flex; margin-bottom:25px;">
 	            <div style="padding: 2px 6px; margin-right: 5px; border-radius: 3px;font-size:15px; background-color: #f7f7f7;">주 선택</div>
 	            <select name="week" onchange="location.href='?week=' + this.value;">
 	                <c:forEach var="week" items="${weekList}">
@@ -39,7 +39,7 @@
 	                <c:set var="days" value="${part.value}" />
 	
 	                <div style="display:flex; justify-content:space-between; margin:13px 19%; font-size:17px;">
-	                    <div style="width:100px;">${userName}</div>
+	                    <div style="width:100px; font-weight: bold;">${userName}</div>
 	                    <div style="width:130px;"><c:choose><c:when test="${days[0] == null}">-</c:when><c:otherwise>${days[0]}</c:otherwise></c:choose></div>
 			            <div style="width:130px;"><c:choose><c:when test="${days[1] == null}">-</c:when><c:otherwise>${days[1]}</c:otherwise></c:choose></div>
 			            <div style="width:130px;"><c:choose><c:when test="${days[2] == null}">-</c:when><c:otherwise>${days[2]}</c:otherwise></c:choose></div>

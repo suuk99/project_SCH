@@ -37,14 +37,15 @@
 			<ul>
 				<li><a href="/sch/schedule/apply">근무 신청</a></li>
 				<li><a href="/sch/schedule/list">근무시간 조회</a></li>
-				<li><a href="/sch/schedule/swap">시간변경/대타 신청</a></li>
+				<li><a href="/sch/schedule/swap">대타 신청</a></li>
+				<li><a href="/sch/schedule/swapConfirm">대타요청 확인</a></li>
 			</ul>
 		</div>
 			
 		<div class="menu">
 			<a href="">급여정보</a>
 			<ul>
-				<li><a href="/sch/user/selectSal">급여조회</a></li>
+				<li><a href="/sch/salary/select">급여조회</a></li>
 			</ul>
 		</div>
 		

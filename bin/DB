@@ -1,6 +1,7 @@
 CREATE DATABASE SCH;
 USE SCH;
 
+
 # 사용자 정보 테이블
 CREATE TABLE `user` (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -18,6 +19,7 @@ CREATE TABLE `user` (
 SELECT userId, ROLE FROM USER WHERE userId = 'sss';
 SELECT * FROM `user`;
 
+
 # 사용자 근무 신청 테이블
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -32,20 +34,57 @@ CREATE TABLE userSchedule(
 DROP TABLE userSchedule;      
 SELECT * FROM userSchedule;
 
+
 # 스케줄 등록 테이블 
 CREATE TABLE fixSchedule (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    userName VARCHAR(50),
-    weekStart DATE,
-    WEEKDAY INT,
-    workStatus VARCHAR(10),
+    userName VARCHAR(50) NOT NULL,
+    weekStart DATE NOT NULL,
+    `weekDay` INT NOT NULL,
+    workStatus VARCHAR(10) NOT NULL,
     startTime VARCHAR(10),
     endTime VARCHAR(10),
     confirm BOOLEAN DEFAULT 0
 );
 
-DROP TABLE fixSchedule
+DROP TABLE fixSchedule;
 SELECT * FROM fixSchedule;
+
+-- 홍길순 2025년 11월 테스트 데이터
+INSERT INTO fixSchedule (userName, weekStart, WEEKDAY, workStatus, startTime, endTime, confirm) VALUES
+('홍길순', '2025-11-03', 1, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-03', 2, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-03', 3, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-03', 4, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-03', 5, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-03', 6, '휴무', NULL, NULL, 1),
+('홍길순', '2025-11-03', 7, '휴무', NULL, NULL, 1),
+
+('홍길순', '2025-11-10', 1, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-10', 2, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-10', 3, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-10', 4, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-10', 5, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-10', 6, '휴무', NULL, NULL, 1),
+('홍길순', '2025-11-10', 7, '휴무', NULL, NULL, 1),
+
+('홍길순', '2025-11-17', 1, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-17', 2, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-17', 3, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-17', 4, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-17', 5, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-17', 6, '휴무', NULL, NULL, 1),
+('홍길순', '2025-11-17', 7, '휴무', NULL, NULL, 1),
+
+('홍길순', '2025-11-24', 1, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-24', 2, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-24', 3, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-24', 4, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-24', 5, '근무', '09:00', '18:00', 1),
+('홍길순', '2025-11-24', 6, '휴무', NULL, NULL, 1),
+('홍길순', '2025-11-24', 7, '휴무', NULL, NULL, 1);
+
+
 
 # 스케줄 확정 테이블
 CREATE TABLE scheduleConfirm (
@@ -54,11 +93,46 @@ CREATE TABLE scheduleConfirm (
     confirm BOOLEAN DEFAULT 0
 );
 
+UPDATE scheduleConfirm
+    SET confirm = 1
+    WHERE userName = '고길동';
+    
 DROP TABLE scheduleConfirm;
 SELECT * FROM scheduleConfirm;
-	SELECT COUNT(userName) 
-				FROM scheduleConfirm
-				WHERE confirm = 1
+
+-- 11월 첫 주
+INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+VALUES ('2025-11-03', '홍길순', 1);
+
+-- 11월 둘째 주
+INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+VALUES ('2025-11-10', '홍길순', 1);
+
+-- 11월 셋째 주
+INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+VALUES ('2025-11-17', '홍길순', 1);
+
+-- 11월 넷째 주
+INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+VALUES ('2025-11-24', '홍길순', 1);
+
+# 대타 테이블
+CREATE TABLE swapRequest (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    requester VARCHAR(30) NOT NULL,
+    target VARCHAR(30) NOT NULL,
+    swapDate DATE NOT NULL,
+    weekStart DATE NOT NULL,
+    weekDate INT NOT NULL,
+    startTime TIME NOT NULL,
+    endTime TIME NOT NULL,
+    `status` VARCHAR(20) DEFAULT 'pending'
+);
+# pending = 보류, approved = 승인, rejected = 거부
+
+SELECT * FROM swapRequest;
+DROP TABLE swapRequest;
+
 # 공지사항 테이블 
 DROP TABLE notice;
 CREATE TABLE notice (
@@ -73,6 +147,7 @@ CREATE TABLE notice (
 
 INSERT INTO notice (regDate, writerId, title, content)
 SELECT NOW(), 1, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
+
 
 # 급여조회 테이블
 CREATE TABLE salary (
