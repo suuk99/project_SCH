@@ -4,6 +4,7 @@ import java.net.http.WebSocket;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,4 +169,23 @@ public class ScheduleService {
 		//수락 시 웹소켓으로 요청자에게 알림
 		this.notifier.sendAlertToUser(requester, "대타 요청이 수락되었습니다.");
 	}
+
+    public List<FixSchedule> getFixScheduleByMonth(String userName, YearMonth requestedMonth) {
+        String monthStr = requestedMonth.toString(); // yyyy-MM
+        List<FixSchedule> list = scheduleDao.getFixScheduleByMonth(userName, monthStr);
+
+        for (FixSchedule fs : list) {
+            LocalDate base = fs.getWeekStart().plusDays(fs.getWeekDay() - 1);
+            String start = fs.getStartTime();
+            String end = fs.getEndTime();
+
+            if (start == null || end == null) continue;
+
+            fs.setStart(LocalDateTime.parse(base + "T" + start));
+            fs.setEnd(LocalDateTime.parse(base + "T" + end));
+            fs.setDate(base);
+        }
+
+        return list;
+    }
 }

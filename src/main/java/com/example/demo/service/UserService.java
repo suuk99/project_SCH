@@ -57,4 +57,12 @@ public class UserService {
 	public void updatePw(String userId, String newPw) {
 		this.userDao.updatePw(userId, newPw);
 	}
+
+	public void updateStatus(int id, String status) {
+		this.userDao.updateStatus(id, status);
+	}
+
+	public List<User> getJoinRequest() {
+		return this.userDao.getJoinRequest();
+	}
 }

@@ -57,6 +57,7 @@ public interface ScheduleDao {
 			    ON u.userId = s.userId
 			    AND s.weekStart = #{weekStart}
 			    WHERE role != 'ADMIN'
+			    AND u.status = 'o'
 			    ORDER BY u.name;
 			""")
 	public List<Map<String, Object>> getAllSchedule(LocalDate weekStart);
@@ -67,7 +68,8 @@ public interface ScheduleDao {
 			    INNER JOIN userSchedule AS s
 			    ON u.userId = s.userId
 			    AND s.weekStart = #{weekStart}
-			    WHERE role != 'ADMIN'
+			    WHERE u.role != 'ADMIN'
+			    AND u.status = 'o'
 			    ORDER BY u.name;
 			""")
 	public List<Map<String, Object>> getApplyList(LocalDate weekStart);
@@ -149,6 +151,7 @@ public interface ScheduleDao {
 			        ON u.name = f.userName
 			        AND f.weekStart = #{weekStart}
 			    WHERE u.name != '관리자'
+			    AND status = 'o'
 			    ORDER BY u.name
 			""")
 	public List<Map<String, Object>> getAllUserName(@Param("weekStart") String weekStart);
@@ -157,6 +160,7 @@ public interface ScheduleDao {
 			SELECT userId, name
 				FROM user
 				WHERE role != 'ADMIN'
+				AND status = 'o'
 				ORDER BY name
 			""")
 	public List<Map<String, Object>> getUserInfo();
@@ -209,4 +213,13 @@ public interface ScheduleDao {
 			""")
 	public void insertFixSchedule(@Param("target") String target, @Param("weekStart") LocalDate weekStart, @Param("weekDate") int weekDate, @Param("workStatus") String workStatus, @Param("start") String start,
 								  @Param("end") String end, @Param("confirm") int confirm);
+	
+	@Select("""
+			SELECT *
+				FROM fixSchedule
+				WHERE userName = #{userName}
+				AND DATE_FORMAT(weekStart, '%Y-%m') = #{monthStr}
+				AND confirm = 1
+			""")
+	public List<FixSchedule> getFixScheduleByMonth(String userName, String monthStr);
 }

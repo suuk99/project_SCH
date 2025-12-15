@@ -15,7 +15,11 @@
 	            <div class="area-1" style="width: 100%; max-width: 800px;">
 	                <div class="request-list" style="border-bottom: 1px solid #dedede; font-size: 21px; font-weight: bold;"></div>
 	                <div style="margin-top: 30px;"></div>
-	
+					<c:if test="${empty requests}">
+						<div style="font-size: 14px;">
+							대타 요청이 없습니다.
+						</div>
+					</c:if>
 	                <c:forEach var="req" items="${requests}">
 	                    <div class="request-content" style="font-size: 17px; text-align: left; margin-bottom: 15px;">
 	                        <div><span style="font-weight: bold; margin-right: 19px;">요 청 자</span> ${req.requester}</div>

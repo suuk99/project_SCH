@@ -54,9 +54,6 @@
 		                <div class="content" style="font-size: 17px; margin-left: 25px; margin-top: 7px;">주휴수당
 		                	<span style="margin-left: 40px;">ddd</span>
 		                </div>
-		                 <div class="content" style="font-size: 17px; margin-left: 25px; margin-top: 9px;">TOTAL
-		                	<span style="margin-left: 43px;">ddd</span>
-		                </div>
 	            	</div>
 	            	
 	            	<div class="info-4" style="margin-bottom: 300px;">
@@ -75,9 +72,6 @@
 		                </div>
 		                <div class="content" style="font-size: 17px; margin-left: 25px; margin-top: 7px;">지방소득세
 		                	<span style="margin-left: 25px;">ddd</span>
-		                </div>
-		                <div class="content" style="font-size: 17px; margin-left: 25px; margin-top: 9px;">TOTAL
-		                	<span style="margin-left: 43px;">ddd</span>
 		                </div>
 	            	</div>
 	            </div>

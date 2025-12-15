@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.example.demo.dto.User;
 import com.example.demo.service.ScheduleService;
 import com.example.demo.service.UserService;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -42,7 +43,7 @@ public class AdminController {
         LocalDate today = LocalDate.now();
         int dayOfWeek = today.getDayOfWeek().getValue();
         LocalDate thisMonday = today.minusDays(dayOfWeek - 1);
-        LocalDate start = thisMonday.plusWeeks(2);
+        LocalDate start = thisMonday.plusWeeks(1);
 
         List<Map<String, String>> weekList = new ArrayList<>();
         for (int i = 0; i <= 4; i++) {
@@ -164,5 +165,14 @@ public class AdminController {
     @GetMapping("/sch/admin/approve")
     public String approve() {
         return "sch/admin/approve";
+    }
+    
+    //회원가입요청 확인
+    @GetMapping("/sch/admin/joinConfirm")
+    public String joinConfirm(Model model) {
+    	List<User> requests = userService.getJoinRequest();
+    	model.addAttribute("requests", requests);
+    	
+    	return "sch/admin/joinConfirm";
     }
 }

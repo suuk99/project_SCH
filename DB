@@ -13,9 +13,11 @@ CREATE TABLE `user` (
   award VARCHAR(30),
   regDate DATETIME NOT NULL DEFAULT NOW(),
   birthDate VARCHAR(8) NOT NULL,
-  phoneNum VARCHAR(11) NOT NULL   
+  phoneNum VARCHAR(11) NOT NULL,
+  `status` VARCHAR(20) DEFAULT 'wating'   
 );
 
+ALTER TABLE `user` ADD COLUMN `status` VARCHAR(20) DEFAULT 'wating';
 SELECT userId, ROLE FROM USER WHERE userId = 'sss';
 SELECT * FROM `user`;
 
@@ -116,6 +118,8 @@ VALUES ('2025-11-17', '홍길순', 1);
 INSERT INTO scheduleConfirm (weekStart, userName, confirm)
 VALUES ('2025-11-24', '홍길순', 1);
 
+INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+VALUES ('2025-12-15', '홍길순', 1);
 # 대타 테이블
 CREATE TABLE swapRequest (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -152,11 +156,11 @@ SELECT NOW(), 1, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지�
 # 급여조회 테이블
 CREATE TABLE salary (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id INT UNSIGNED NOT NULL,
-    `month` VARCHAR(10) NOT NULL,
-    hourly_rate INT UNSIGNED NOT NULL, 
-    total_hours DECIMAL(5,2) NOT NULL,
-    gross_pay INT UNSIGNED NOT NULL,
-    deductions INT UNSIGNED NOT NULL,
-    net_pay INT UNSIGNED NOT NULL
+    user_id int unsigned not null,
+    `month` varchar(10) not null,
+    hourly_rate int unsigned not null, 
+    total_hours decimal(5,2) not null,
+    gross_pay int unsigned not null,
+    deductions int unsigned not null,
+    net_pay int unsigned not null
 );

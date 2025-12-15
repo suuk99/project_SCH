@@ -15,7 +15,6 @@ public class HttpSessionIdHandshakeInterceptor implements HandshakeInterceptor {
         Object loginUserName = ((org.springframework.http.server.ServletServerHttpRequest) request)
                 .getServletRequest().getSession().getAttribute("loginUserName");
         attributes.put("loginUserName", loginUserName);
-        System.out.println("Handshake loginUserName=" + loginUserName);
         return true;
     }
 

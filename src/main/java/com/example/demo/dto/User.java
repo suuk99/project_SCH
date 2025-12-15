@@ -17,4 +17,5 @@ public class User {
 	private String phoneNum;
 	private String birthDate;
 	private String role;
+	private String status;
 }

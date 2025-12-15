@@ -37,4 +37,18 @@ public interface UserDao {
 				WHERE userId= #{userId}
 			""")
 	public void updatePw(String userId, String newPw);
+	
+	@Update("""
+			UPDATE `user`
+				SET status = #{status}
+				WHERE id = #{id}
+			""")
+	public void updateStatus(int id, String status);
+
+	@Select("""
+			SELECT *
+				FROM user
+				WHERE status = 'wating'
+			""")
+	public List<User> getJoinRequest();
 }

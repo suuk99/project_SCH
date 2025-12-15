@@ -1,9 +1,12 @@
 package com.example.demo.controller;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.example.demo.dto.ResultData;
@@ -16,10 +19,12 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class UserController {
 	
+	private ScheduleNotificationController notifier;
 	private UserService userService;
 	
-	public UserController(UserService userService) {
+	public UserController(UserService userService, ScheduleNotificationController notifier) {
 		this.userService = userService;
+		this.notifier = notifier;
 	}
 	
 	//회원가입
@@ -33,8 +38,24 @@ public class UserController {
 	public String doJoin(String userId, String password, String checkPw, String name, String birthDate, String phoneNum, String sex) {
 		
 		this.userService.joinUser(userId, password, name, birthDate, phoneNum, sex);
-		
+		notifier.sendAlertToUser("관리자", "새로운 회원가입 요청이 있습니다. 지금 바로 확인해주세요!");
 		return Util.jsReplace("회원가입이 요청이 완료되었습니다.", "/sch/user/login");
+	}
+	
+	@PostMapping("/sch/user/approve")
+	@ResponseBody
+	public String approveUser(@RequestBody Map<String, Object> data) {
+	    int id = (int) data.get("id");
+	    this.userService.updateStatus(id, "o");
+	    return "ok";
+	}
+
+	@PostMapping("/sch/user/reject")
+	@ResponseBody
+	public String rejectUser(@RequestBody Map<String, Object> data) {
+	    int id = (int) data.get("id");
+	    this.userService.updateStatus(id, "x");
+	    return "ok";
 	}
 	
 	@GetMapping("/sch/user/userIdChk")
@@ -103,21 +124,15 @@ public class UserController {
 	@GetMapping("/sch/user/pnChk")
 	@ResponseBody
 	public ResultData checkPn(String phoneNum) {
-	    boolean isValid = this.userService.getPnChk(phoneNum);
-	    
-	    if (!isValid) {
+	    if(phoneNum == null || phoneNum.trim().isEmpty()) {
 	        return new ResultData<>("F-1", "전화번호를 입력하세요.");
 	    }
-	    return new ResultData<>("S-1", " ");
-	}
-	@GetMapping("/sch/user/sexChk")
-	@ResponseBody
-	public ResultData checkSex(String sex) {
-	    boolean isValid = this.userService.getSexChk(sex);
 	    
-	    if (!isValid) {
-	        return new ResultData<>("F-1", "성별을 선택하세요.");
+	    // 숫자만 있는지, 10~11자리 체크
+	    if(!phoneNum.matches("\\d{10,11}")) {
+	        return new ResultData<>("F-2", "전화번호 형식이 올바르지 않습니다.");
 	    }
+	    
 	    return new ResultData<>("S-1", "");
 	}
 	
@@ -151,6 +166,10 @@ public class UserController {
 		if (user == null || !user.getPassword().equals(password)) {
 	        return Util.jsReplace("아이디 또는 비밀번호를 확인해 주세요.", "/sch/user/login");
 	    }
+		
+		if(!"o".equals(user.getStatus())) {
+			return Util.jsReplace("관리자 승인 후 로그인 가능합니다.", "/sch/user/login");
+		}
 
 		session.setAttribute("loginUserId", user.getUserId());
 		session.setAttribute("loginUserID", user.getId());
