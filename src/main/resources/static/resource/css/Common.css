@@ -1,8 +1,5 @@
 @charset "UTF-8";
 
-/* =========================
-   FONT
-========================= */
 @font-face {
     font-family: 'Suit';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_suit@1.0/SUIT-Regular.woff2') format('woff2');
@@ -10,170 +7,132 @@
     font-display: swap;
 }
 
-html, body, html * {
-    font-family: 'Suit';
-    box-sizing: border-box;
+html * {
+	font-family: 'Suit';
 }
 
-/* =========================
-   BASE
-========================= */
 body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+	margin: 0;
+	padding: 0;
 }
 
-/* =========================
-   HEADER
-========================= */
-.header {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-bottom: 1px solid black;
-    padding: 10px 0;
+.table {
+	margin-top: 180px;
+	text-align: center;
 }
 
-.logo {
-    font-size: clamp(28px, 4vw, 40px);
-    font-weight: bold;
-    margin: 0 5vw;
-}
-
-.ment {
-    margin-left: 4vw;
-    font-weight: bold;
-}
-
-.menu {
-    position: relative;
-    font-size: clamp(16px, 2.5vw, 21px);
-    font-weight: bold;
-    padding: 10px;
-}
-
-.menu > ul {
-    position: absolute;
-    display: none;
-    width: 150px;
-    font-size: 16px;
-    font-weight: normal;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    padding: 8px 0;
-}
-
-.menu:hover > ul {
-    display: block;
-}
-
-/* =========================
-   LOGIN PAGE
-========================= */
+/* 로그인 박스 */
 .table_login {
-    margin: auto;
-    margin-top: 320px;
-    width: 90%;
-    max-width: 400px;
-    min-height: 450px;
-    background-color: #ededeb;
-    border-radius: 10px;
-    text-align: center;
-    padding: 20px;
+	margin-top: 220px;
+	text-align: center;
+	height: 450px;
+	width: 400px;
+	background-color: #ededeb;
+	margin-right: auto;
+	margin-left: auto;
+	border-radius: 10px;
 }
 
-.logo_login {
-    font-weight: bold;
-    font-size: clamp(32px, 6vw, 49px);
-    padding: 40px 0 30px;
-}
-
-/* input spacing */
+/* 로그인 창 input 간격*/
 #input {
-    margin-bottom: 14px;
+	margin-bottom: 14px;
 }
-
-/* message area */
+/* 로그인화면 로고 */
+.logo_login {
+	font-weight: bold;
+	font-size: 49px;
+	padding-top: 48px;
+	padding-bottom: 30px;
+}
+/* 비동기 문구 칸 */
 .message {
-    min-height: 20px;
+    min-height: 20px;   
     line-height: 18px;
     font-size: 15px;
     margin-top: 3px;
 }
 
-/* buttons */
+/* 로그인 회원가입 창 버튼 */
 .btn {
-    width: 100%;
-    max-width: 320px;
-    font-size: 15px;
-    margin: 9px auto;
+	width: 320px;
+	font-size: 15px;
+	margin: 9px 0;
 }
 
-/* =========================
-   TABLE / COMMON
-========================= */
-.table {
-    margin-top: 10vh;
-    text-align: center;
+/* 상단바 */
+.header {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	border-bottom: 1px solid black;
 }
 
-/* user info table */
+.logo {
+	padding: 13px 0;
+	font-size: 40px;
+	font-weight: bold;
+	margin: 0 120px;
+}
+
+.ment {
+	margin-left: 20%;
+	font-weight: bold;
+}
+
+.menu {
+	position: relative;
+	font-size: 21px;
+	font-weight: bold;
+	padding: 10px;
+	margin-left: 30px;
+}
+
+.menu > ul {
+	position: absolute;
+	display: none;	
+	width: 150px;
+	font-size: 16px;
+	font-weight: normal;
+	top: 65%;
+}
+
+.menu:hover > ul {
+	display: block;
+	margin-top: 10px;
+	background-color: white;
+}
+
+/* 내정보 */
 table {
-    width: 90%;
-    max-width: 400px;
-    margin: 0 auto;
-    text-align: left;
-    font-size: clamp(14px, 2.5vw, 17px);
+	width: 400px;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: left;
+	font-size: 17px;
 }
 
-/* notice button */
+/* 공지사항 버튼 */
 #nBtn {
-    margin: 0 auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
-/* paging buttons */
+/* 페이징 버튼*/
 .join-item.btn.btn-sm {
-    padding: 3px 6px;
-    font-size: 13px;
-    margin: 0 2px;
-    border-radius: 4px;
-    width: 27px;
-    height: 30px;
+    padding: 3px 6px;       
+    font-size: 13px;         
+    margin: 0 2px;         
+    border-radius: 4px; 
+    width: 27px;   
+    height: 30px;  
 }
-
 .join-item.btn.btn-sm.btn-active {
     background-color: #dcdede;
     border-color: #dcdede;
 }
 
-/* calendar week select */
+/* 캘린더 선택 주 배경색 변경 */
 .select-week {
-    background-color: #ededed;
+	background-color: #ededed;
 }
 
-/* =========================
-   RESPONSIVE (MOBILE)
-========================= */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-    }
-
-    .logo {
-        margin: 10px 0;
-    }
-
-    .menu {
-        margin-left: 0;
-    }
-
-    .menu > ul {
-        position: static;
-        width: 100%;
-        text-align: center;
-    }
-}

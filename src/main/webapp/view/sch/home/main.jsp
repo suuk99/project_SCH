@@ -36,7 +36,7 @@
 	                    <a href="/sch/schedule/list" style="font-size: 20px; font-weight: bold;">이번 주 근무시간</a>
 	                    <div style="border-bottom: 1px solid #dedede; margin: 4px 0 24px;"></div>
 	                    <div style="margin-bottom: 5px; margin-left: 4px; font-size: 15px;">
-	                        <div id="weekCalendar" style="width: 100%;"></div>
+	                        <div id="weekCalendar" style="width: 90%;"></div>
 	                        <div style="text-align: right; font-size: 14px; margin-top: 15px; color: #6b6c6e;">
 	                            <a href="/sch/schedule/list">근무시간 더 보기 ></a>
 	                        </div>
@@ -75,6 +75,7 @@
 		        headerToolbar: false,
 		        firstDay: 1,
 		        height: 84,
+		        width: 600,
 		        eventTimeFormat: {
 		            hour: '2-digit',
 		            minute: '2-digit',
@@ -95,9 +96,11 @@
 		    justify-content: center; 
 		    align-items: center;     
 		    text-align: center;      
-		    font-size: 13px;         
+		    font-size: 14px;         
 		    padding: 11px;
 		}
+		
+		
 	</style>
 
 <%@ include file="/view/sch/common/footer.jsp"%>
