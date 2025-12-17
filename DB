@@ -17,11 +17,9 @@ CREATE TABLE `user` (
   `status` VARCHAR(20) DEFAULT 'wating'   
 );
 
-ALTER TABLE `user` ADD COLUMN `status` VARCHAR(20) DEFAULT 'wating';
-SELECT userId, ROLE FROM USER WHERE userId = 'sss';
 SELECT * FROM `user`;
-
-
+    
+    
 # 사용자 근무 신청 테이블
 CREATE TABLE userSchedule(
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -33,7 +31,6 @@ CREATE TABLE userSchedule(
   workStatus ENUM('yes', 'no') DEFAULT 'no'
 );
 
-DROP TABLE userSchedule;      
 SELECT * FROM userSchedule;
 
 
@@ -49,43 +46,7 @@ CREATE TABLE fixSchedule (
     confirm BOOLEAN DEFAULT 0
 );
 
-DROP TABLE fixSchedule;
 SELECT * FROM fixSchedule;
-
--- 홍길순 2025년 11월 테스트 데이터
-INSERT INTO fixSchedule (userName, weekStart, WEEKDAY, workStatus, startTime, endTime, confirm) VALUES
-('홍길순', '2025-11-03', 1, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-03', 2, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-03', 3, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-03', 4, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-03', 5, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-03', 6, '휴무', NULL, NULL, 1),
-('홍길순', '2025-11-03', 7, '휴무', NULL, NULL, 1),
-
-('홍길순', '2025-11-10', 1, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-10', 2, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-10', 3, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-10', 4, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-10', 5, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-10', 6, '휴무', NULL, NULL, 1),
-('홍길순', '2025-11-10', 7, '휴무', NULL, NULL, 1),
-
-('홍길순', '2025-11-17', 1, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-17', 2, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-17', 3, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-17', 4, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-17', 5, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-17', 6, '휴무', NULL, NULL, 1),
-('홍길순', '2025-11-17', 7, '휴무', NULL, NULL, 1),
-
-('홍길순', '2025-11-24', 1, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-24', 2, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-24', 3, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-24', 4, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-24', 5, '근무', '09:00', '18:00', 1),
-('홍길순', '2025-11-24', 6, '휴무', NULL, NULL, 1),
-('홍길순', '2025-11-24', 7, '휴무', NULL, NULL, 1);
-
 
 
 # 스케줄 확정 테이블
@@ -94,32 +55,10 @@ CREATE TABLE scheduleConfirm (
     userName VARCHAR(50) NOT NULL,
     confirm BOOLEAN DEFAULT 0
 );
-
-UPDATE scheduleConfirm
-    SET confirm = 1
-    WHERE userName = '고길동';
-    
-DROP TABLE scheduleConfirm;
+ 
 SELECT * FROM scheduleConfirm;
 
--- 11월 첫 주
-INSERT INTO scheduleConfirm (weekStart, userName, confirm)
-VALUES ('2025-11-03', '홍길순', 1);
 
--- 11월 둘째 주
-INSERT INTO scheduleConfirm (weekStart, userName, confirm)
-VALUES ('2025-11-10', '홍길순', 1);
-
--- 11월 셋째 주
-INSERT INTO scheduleConfirm (weekStart, userName, confirm)
-VALUES ('2025-11-17', '홍길순', 1);
-
--- 11월 넷째 주
-INSERT INTO scheduleConfirm (weekStart, userName, confirm)
-VALUES ('2025-11-24', '홍길순', 1);
-
-INSERT INTO scheduleConfirm (weekStart, userName, confirm)
-VALUES ('2025-12-15', '홍길순', 1);
 # 대타 테이블
 CREATE TABLE swapRequest (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -135,7 +74,7 @@ CREATE TABLE swapRequest (
 # pending = 보류, approved = 승인, rejected = 거부
 
 SELECT * FROM swapRequest;
-DROP TABLE swapRequest;
+
 
 # 공지사항 테이블 
 DROP TABLE notice;
@@ -149,18 +88,100 @@ CREATE TABLE notice (
     hit INT NOT NULL DEFAULT 0
 );
 
-INSERT INTO notice (regDate, writerId, title, content)
-SELECT NOW(), 1, CONCAT('공지사항_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
-
 
 # 급여조회 테이블
 CREATE TABLE salary (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    user_id int unsigned not null,
-    `month` varchar(10) not null,
-    hourly_rate int unsigned not null, 
-    total_hours decimal(5,2) not null,
-    gross_pay int unsigned not null,
-    deductions int unsigned not null,
-    net_pay int unsigned not null
+    user_id INT UNSIGNED NOT NULL,
+    `month` VARCHAR(10) NOT NULL,
+    hourly_rate INT UNSIGNED NOT NULL, 
+    total_hours DECIMAL(5,2) NOT NULL,
+    gross_pay INT UNSIGNED NOT NULL,
+    deductions INT UNSIGNED NOT NULL,
+    net_pay INT UNSIGNED NOT NULL
 );
+
+
+# 테스트 데이터
+
+UPDATE `user`
+    SET `role` = 'ADMIN'
+    WHERE userId = 'sss';
+    
+# 테스트 데이터
+INSERT INTO fixSchedule
+(userName, weekStart, WEEKDAY, workStatus, startTime, endTime, confirm)
+VALUES
+-- 11월 1주차 (2025-11-04)
+('테스트계정1', '2025-11-04', 1, 'yes', '09:00', '18:00', 1),
+('테스트계정1', '2025-11-04', 2, 'yes', '15:00', '23:00', 1),
+('테스트계정1', '2025-11-04', 3, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-04', 4, 'yes', '13:00', '22:00', 1),
+('테스트계정1', '2025-11-04', 5, 'yes', '15:00', '23:00', 1),
+('테스트계정1', '2025-11-04', 6, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-04', 7, 'no',  NULL, NULL, 1),
+
+-- 11월 2주차 (2025-11-11)
+('테스트계정1', '2025-11-11', 1, 'yes', '09:00', '18:00', 1),
+('테스트계정1', '2025-11-11', 2, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-11', 3, 'yes', '15:00', '23:00', 1),
+('테스트계정1', '2025-11-11', 4, 'yes', '12:00', '21:00', 1),
+('테스트계정1', '2025-11-11', 5, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-11', 6, 'yes', '15:00', '23:00', 1),
+('테스트계정1', '2025-11-11', 7, 'no',  NULL, NULL, 1),
+
+-- 11월 3주차 (2025-11-18)
+('테스트계정1', '2025-11-18', 1, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-18', 2, 'yes', '09:00', '18:00', 1),
+('테스트계정1', '2025-11-18', 3, 'yes', '15:00', '23:00', 1),
+('테스트계정1', '2025-11-18', 4, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-18', 5, 'yes', '14:00', '22:00', 1),
+('테스트계정1', '2025-11-18', 6, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-18', 7, 'yes', '15:00', '23:00', 1),
+
+-- 11월 4주차 (2025-11-25)
+('테스트계정1', '2025-11-25', 1, 'yes', '09:00', '18:00', 1),
+('테스트계정1', '2025-11-25', 2, 'yes', '15:00', '23:00', 1),
+('테스트계정1', '2025-11-25', 3, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-25', 4, 'yes', '13:00', '21:00', 1),
+('테스트계정1', '2025-11-25', 5, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-25', 6, 'no',  NULL, NULL, 1),
+('테스트계정1', '2025-11-25', 7, 'no',  NULL, NULL, 1);
+
+
+INSERT INTO fixSchedule
+(userName, weekStart, WEEKDAY, workStatus, startTime, endTime, confirm)
+VALUES
+-- 월
+('테스트계정1', '2025-12-15', 1, 'yes', '09:00', '18:00', 1),
+
+-- 화 (야간)
+('테스트계정1', '2025-12-15', 2, 'yes', '15:00', '23:00', 1),
+
+-- 수 (휴무)
+('테스트계정1', '2025-12-15', 3, 'no', NULL, NULL, 1),
+
+-- 목
+('테스트계정1', '2025-12-15', 4, 'yes', '10:00', '19:00', 1),
+
+-- 금 (야간)
+('테스트계정1', '2025-12-15', 5, 'yes', '15:00', '23:00', 1),
+
+-- 토
+('테스트계정1', '2025-12-15', 6, 'yes', '12:00', '20:00', 1),
+
+-- 일 (휴무)
+('테스트계정1', '2025-12-15', 7, 'no', NULL, NULL, 1);
+
+
+INSERT INTO scheduleConfirm (weekStart, userName, confirm)
+VALUES
+('2025-11-04', '테스트계정1', 1),
+('2025-11-11', '테스트계정1', 1),
+('2025-11-18', '테스트계정1', 1),
+('2025-11-25', '테스트계정1', 1),
+('2025-12-15', '테스트계정1', 1);
+
+
+INSERT INTO notice (regDate, writerId, title, content)
+SELECT NOW(), 1, CONCAT('공지사항 테스트_', SUBSTR(RAND(), 1, 5)), CONCAT('공지사항 내용_', SUBSTR(RAND(), 1, 5)) FROM notice;
